@@ -1580,6 +1580,10 @@ func (c *Client) FindVolumeValue(k string, p *model.VolumeSpec) string {
 		return p.ProfileId
 	case "GroupId":
 		return p.GroupId
+	case "DurableName":
+		return p.Identifier.DurableName
+	case "DurableNameFormat":
+		return p.Identifier.DurableNameFormat
 	}
 	return ""
 }
