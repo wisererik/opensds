@@ -24,6 +24,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/opensds/opensds/pkg/utils/config"
 	"reflect"
 	"sort"
 	"strconv"
@@ -80,9 +81,9 @@ func AuthorizeProjectContext(ctx *c.Context, tenantId string) bool {
 }
 
 // NewClient
-func NewClient(edps []string) *Client {
+func NewClient(etcd *config.Database) *Client {
 	return &Client{
-		clientInterface: Init(edps),
+		clientInterface: Init(etcd),
 	}
 }
 
