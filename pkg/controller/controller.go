@@ -21,6 +21,7 @@ package controller
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	log "github.com/golang/glog"
@@ -215,7 +216,7 @@ func (c *Controller) ExtendVolume(contx context.Context, opt *pb.ExtendVolumeOpt
 	log.Info("Controller server receive extend volume request, vr =", opt)
 
 	ctx := osdsCtx.NewContextFromJson(opt.GetContext())
-	vol, err := db.C.GetVolume(ctx, opt.GetId())
+	vol, err := db.C.GetVolume(ctx, opt.Id)
 	if err != nil {
 		log.Error("get volume failed in extend volume method: ", err.Error())
 		return pb.GenericResponseError(err), err
@@ -225,17 +226,33 @@ func (c *Controller) ExtendVolume(contx context.Context, opt *pb.ExtendVolumeOpt
 	var rollBack = false
 	defer func() {
 		if rollBack {
-			vol.Status = model.VolumeErrorExtending
-			db.C.UpdateVolume(ctx, vol)
+			db.UpdateVolumeStatus(ctx, db.C, opt.Id, model.VolumeAvailable)
 		}
 	}()
 
-	// Select the storage tag according to the lifecycle flag.
+	pool, err := db.C.GetPool(ctx, vol.PoolId)
+	if nil != err {
+		log.Error("get pool failed in extend volume method: ", err.Error())
+		rollBack = true
+		return pb.GenericResponseError(err), err
+	}
+
+	var newSize = opt.GetSize()
+	if pool.FreeCapacity <= (newSize - vol.Size) {
+		reason := fmt.Sprintf("pool free capacity(%d) < new size(%d) - old size(%d)",
+			pool.FreeCapacity, newSize, vol.Size)
+		rollBack = true
+		return pb.GenericResponseError(reason), errors.New(reason)
+	}
+	opt.PoolId = pool.Id
+	opt.PoolName = pool.Name
 	prf := model.NewProfileFromJson(opt.Profile)
+
+	// Select the storage tag according to the lifecycle flag.
 	c.policyController = policy.NewController(prf)
 	c.policyController.Setup(EXTEND_LIFECIRCLE_FLAG)
 
-	dockInfo, err := db.C.GetDockByPoolId(ctx, opt.PoolId)
+	dockInfo, err := db.C.GetDockByPoolId(ctx, vol.PoolId)
 	if err != nil {
 		log.Error("when search dock in db by pool id: ", err.Error())
 		rollBack = true
@@ -246,21 +263,19 @@ func (c *Controller) ExtendVolume(contx context.Context, opt *pb.ExtendVolumeOpt
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 
-	if _, err := c.volumeController.ExtendVolume(opt); err != nil {
+	result, err := c.volumeController.ExtendVolume(opt)
+	if err != nil {
 		log.Error("extend volume failed: ", err.Error())
 		rollBack = true
 		return pb.GenericResponseError(err), err
 	}
 
 	// Update the volume data in database.
-	vol.Size = opt.GetSize()
-	vol.Status = model.VolumeAvailable
-	if _, err := db.C.UpdateVolume(ctx, vol); err != nil {
-		log.Errorf("failed to update volume size and status: %v", err.Error())
-		return pb.GenericResponseError(err), err
-	}
+	result.Size = newSize
+	result.PoolId, result.ProfileId = opt.GetPoolId(), opt.GetProfileId()
+	db.C.UpdateStatus(ctx, result, model.VolumeAvailable)
 
-	volBody, _ := json.Marshal(vol)
+	volBody, _ := json.Marshal(result)
 	var errChan = make(chan error, 1)
 	defer close(errChan)
 	go c.policyController.ExecuteAsyncPolicy(opt, string(volBody), errChan)
@@ -270,7 +285,7 @@ func (c *Controller) ExtendVolume(contx context.Context, opt *pb.ExtendVolumeOpt
 		return pb.GenericResponseError(err), err
 	}
 
-	return pb.GenericResponseResult(vol), nil
+	return pb.GenericResponseResult(result), nil
 }
 
 // CreateVolumeAttachment implements pb.ControllerServer.CreateVolumeAttachment
@@ -291,6 +306,7 @@ func (c *Controller) CreateVolumeAttachment(contx context.Context, opt *pb.Creat
 	result, err := c.volumeController.CreateVolumeAttachment(opt)
 	if err != nil {
 		db.UpdateVolumeAttachmentStatus(ctx, db.C, opt.Id, model.VolumeAttachError)
+		db.UpdateVolumeStatus(ctx, db.C, opt.VolumeId, model.VolumeAvailable)
 		msg := fmt.Sprintf("create volume attachment failed: %v", err)
 		log.Error(msg)
 		return pb.GenericResponseError(msg), err
@@ -301,14 +317,14 @@ func (c *Controller) CreateVolumeAttachment(contx context.Context, opt *pb.Creat
 		log.Error("get volume failed in CreateVolumeAttachment method: ", err.Error())
 		return pb.GenericResponseError(err), err
 	}
-	vol.Attached = new(bool)
-	*vol.Attached = true
-	if _, err := db.C.UpdateVolume(ctx, vol); err != nil {
-		msg := fmt.Sprintf("failed to set volume:%s attached to true", vol.Name)
+
+	if vol.Status == model.VolumeAttaching {
+		db.UpdateVolumeStatus(ctx, db.C, vol.Id, model.VolumeInUse)
+	} else {
+		msg := fmt.Sprintf("wrong volume status when volume attachment creation completed")
 		log.Error(msg)
 		return pb.GenericResponseError(msg), err
 	}
-
 	result.AccessProtocol = opt.AccessProtocol
 	result.Status = model.VolumeAttachAvailable
 
@@ -338,7 +354,7 @@ func (c *Controller) DeleteVolumeAttachment(contx context.Context, opt *pb.Delet
 	if err = c.volumeController.DeleteVolumeAttachment(opt); err != nil {
 		msg := fmt.Sprintf("delete volume attachment failed: %v", err)
 		log.Error(msg)
-		db.UpdateVolumeAttachmentStatus(ctx, db.C, opt.Id, model.VolumeAttachErrorDeleting)
+		db.C.DeleteVolumeAttachment(ctx, opt.Id)
 		return pb.GenericResponseError(msg), err
 	}
 
@@ -348,28 +364,8 @@ func (c *Controller) DeleteVolumeAttachment(contx context.Context, opt *pb.Delet
 		return pb.GenericResponseError(msg), err
 	}
 
-	// Check and update volume attached status
-	attachments, err := db.C.ListVolumeAttachmentsWithFilter(ctx, map[string][]string{"volumeId": []string{opt.VolumeId}})
-	if err != nil {
-		msg := fmt.Sprintf("list volume attachment failed in controller.DeleteAttachment: %v", err)
-		log.Error(msg)
-		return pb.GenericResponseError(msg), err
-	}
-	if len(attachments) == 0 {
-		vol, err := db.C.GetVolume(ctx, opt.VolumeId)
-		if err != nil {
-			msg := fmt.Sprintf("get volume failed in controller.DeleteAttachment: %v", err)
-			log.Error(msg)
-			return pb.GenericResponseError(msg), err
-		}
-		vol.Attached = new(bool)
-		if _, err := db.C.UpdateVolume(ctx, vol); err != nil {
-			msg := fmt.Sprintf("set volume attached to false failed in controller.DeleteAttachment: %v", err)
-			log.Error(msg)
-			return pb.GenericResponseError(msg), err
-		}
+	db.UpdateVolumeStatus(ctx, db.C, opt.VolumeId, model.VolumeAvailable)
 
-	}
 	return pb.GenericResponseResult(nil), nil
 }
 
