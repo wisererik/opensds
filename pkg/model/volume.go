@@ -76,7 +76,7 @@ type VolumeSpec struct {
 	// The uuid of the replication which the volume belongs to.
 	ReplicationDriverData map[string]string `json:"replicationDriverData,omitempty"`
 	// Attach status of the volume.
-	Attached *bool `json:"attached,omitempty"`
+	AttachStatus string
 
 	// Whether the volume can be attached more than once, default value is false.
 	MultiAttach bool        `json:"multiAttach,omitempty"`
