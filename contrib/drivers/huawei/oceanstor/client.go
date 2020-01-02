@@ -1004,7 +1004,7 @@ func (c *OceanStorClient) GetHostLunId(hostId, lunId string) (int, error) {
 		return md.HostLunId, nil
 	}
 
-	msg := fmt.Sprintf("Cannot find the host lun id of lun %s", lunId)
+	msg := fmt.Sprintf("cannot find the host lun id of lun %s", lunId)
 	log.Info(msg)
 	return -1, errors.New(msg)
 }
