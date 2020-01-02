@@ -130,6 +130,7 @@ func (c *OceanStorClient) doRequest(method, url string, in interface{}) ([]byte,
 		log.Errorf("Get error info from response failed, method: %s\n url: %s\n error: %v", method, url, inErr)
 		return nil, nil, inErr
 	}
+
 	return b, resp.Header, nil
 }
 
@@ -396,13 +397,14 @@ func (c *OceanStorClient) AddHostWithCheck(hostInfo *pb.HostInfo) (string, error
 		"IP":              hostInfo.Ip,
 	}
 	hostResp := &HostResp{}
+
 	if err := c.request("POST", "/host", reqBody, hostResp); err != nil {
+		if c.checkErrorCode(err, ErrorObjectNameAlreadyExist) {
+			return c.GetHostIdByName(hostName)
+		}
+
 		log.Errorf("Create host failed, host name: %s, error: %v", hostName, err)
 		return "", err
-	}
-
-	if hostResp.Error.Code == ErrorObjectNameAlreadyExist {
-		return c.GetHostIdByName(hostName)
 	}
 
 	if hostResp.Data.Id != "" {
@@ -599,13 +601,15 @@ func (c *OceanStorClient) CreateHostGroup(groupName string) (string, error) {
 	hostGrpResp := &HostGroupResp{}
 
 	if err := c.request("POST", "/hostgroup", reqBody, hostGrpResp); err != nil {
+		if c.checkErrorCode(err, ErrorObjectNameAlreadyExist) {
+			return c.FindHostGroup(groupName)
+		}
+
 		log.Errorf("Create host group failed, group name: %s, error: %v", groupName, err)
 		return "", err
 	}
 
-	if hostGrpResp.Error.Code == ErrorObjectNameAlreadyExist {
-		return c.FindHostGroup(groupName)
-	} else if hostGrpResp.Error.Code != 0 {
+	if hostGrpResp.Error.Code != 0 {
 		log.Errorf("Create host group failed, group name: %s, error code:%d, description:%s",
 			groupName, hostGrpResp.Error.Code, hostGrpResp.Error.Description)
 		return "", fmt.Errorf("code: %d, description: %s",
@@ -644,11 +648,15 @@ func (c *OceanStorClient) AssociateHostToHostGroup(hostGrpId, hostId string) err
 	resp := &GenericResult{}
 
 	if err := c.request("POST", "/hostgroup/associate", reqBody, resp); err != nil {
+		if c.checkErrorCode(err, ErrorHostAlreadyInHostGroup) {
+			return nil
+		}
+
 		log.Errorf("Associate host:%s to host group:%s failed, error: %v", hostId, hostGrpId, err)
 		return err
 	}
 
-	if resp.Error.Code != 0 && resp.Error.Code != ErrorHostAlreadyInHostGroup {
+	if resp.Error.Code != 0 {
 		log.Errorf("Associate host:%s to host group:%s failed, error code:%d, description:%s",
 			hostId, hostGrpId, resp.Error.Code, resp.Error.Description)
 		return fmt.Errorf("code: %d, description: %s",
@@ -767,13 +775,15 @@ func (c *OceanStorClient) CreateLunGroup(groupName string) (string, error) {
 	lunGrpResp := &LunGroupResp{}
 
 	if err := c.request("POST", "/lungroup", reqBody, lunGrpResp); err != nil {
+		if c.checkErrorCode(err, ErrorObjectNameAlreadyExist) {
+			return c.FindLunGroup(groupName)
+		}
+
 		log.Errorf("Create lun group failed, group name: %s, error: %v", groupName, err)
 		return "", err
 	}
 
-	if lunGrpResp.Error.Code == ErrorObjectNameAlreadyExist {
-		return c.FindLunGroup(groupName)
-	} else if lunGrpResp.Error.Code != 0 {
+	if lunGrpResp.Error.Code != 0 {
 		log.Errorf("Create lun group failed, group name: %s, error code:%d, description:%s",
 			groupName, lunGrpResp.Error.Code, lunGrpResp.Error.Description)
 		return "", fmt.Errorf("code: %d, description: %s",
@@ -791,13 +801,15 @@ func (c *OceanStorClient) CreateMappingView(name string) (string, error) {
 	mvResp := &MappingViewResp{}
 
 	if err := c.request("POST", "/mappingview", reqBody, mvResp); err != nil {
+		if c.checkErrorCode(err, ErrorObjectNameAlreadyExist) {
+			return c.FindMappingView(name)
+		}
+
 		log.Errorf("Create mapping view failed, view name: %s, error: %v", name, err)
 		return "", err
 	}
 
-	if mvResp.Error.Code == ErrorObjectNameAlreadyExist {
-		return c.FindMappingView(name)
-	} else if mvResp.Error.Code != 0 {
+	if mvResp.Error.Code != 0 {
 		log.Errorf("Create mapping view failed, view name: %s, error code:%d, description:%s",
 			name, mvResp.Error.Code, mvResp.Error.Description)
 		return "", fmt.Errorf("code: %d, description: %s",
@@ -836,11 +848,15 @@ func (c *OceanStorClient) AssociateLunToLunGroup(lunGrpId, lunId string) error {
 	resp := &GenericResult{}
 
 	if err := c.request("POST", "/lungroup/associate", reqBody, resp); err != nil {
+		if c.checkErrorCode(err, ErrorObjectIDNotUnique) {
+			return nil
+		}
+
 		log.Errorf("Associate lun:%s to lun group:%s failed, error: %v", lunId, lunGrpId, err)
 		return err
 	}
 
-	if resp.Error.Code != 0 && resp.Error.Code != ErrorObjectIDNotUnique {
+	if resp.Error.Code != 0 {
 		log.Errorf("Associate lun:%s to lun group:%s failed, error code:%d, description:%s",
 			lunId, lunGrpId, resp.Error.Code, resp.Error.Description)
 		return fmt.Errorf("code: %d, description: %s",
@@ -876,12 +892,17 @@ func (c *OceanStorClient) AssocateHostGroupToMappingView(viewId, groupId string)
 	}
 
 	resp := &GenericResult{}
+
 	if err := c.request("PUT", "/mappingview/create_associate", reqBody, resp); err != nil {
+		if c.checkErrorCode(err, ErrorHostGroupAlreadyInMappingView) {
+			return nil
+		}
+
 		log.Errorf("Associate host group:%s to mapping view:%s failed, error: %v", groupId, viewId, err)
 		return err
 	}
 
-	if resp.Error.Code != 0 && resp.Error.Code != ErrorHostGroupAlreadyInMappingView {
+	if resp.Error.Code != 0 {
 		log.Errorf("Associate host group:%s to mapping view:%s failed, error code:%d, description:%s",
 			groupId, viewId, resp.Error.Code, resp.Error.Description)
 		return fmt.Errorf("code: %d, description: %s",
@@ -917,12 +938,17 @@ func (c *OceanStorClient) AssocateLunGroupToMappingView(viewId, groupId string) 
 	}
 
 	resp := &GenericResult{}
+
 	if err := c.request("PUT", "/mappingview/create_associate", reqBody, resp); err != nil {
+		if c.checkErrorCode(err, ErrorLunGroupAlreadyInMappingView) {
+			return nil
+		}
+
 		log.Errorf("Associate lun group:%s to mapping view:%s failed, error: %v", groupId, viewId, err)
 		return err
 	}
 
-	if resp.Error.Code != 0 && resp.Error.Code != ErrorLunGroupAlreadyInMappingView {
+	if resp.Error.Code != 0 {
 		log.Errorf("Associate lun group:%s to mapping view:%s failed, error code:%d, description:%s",
 			groupId, viewId, resp.Error.Code, resp.Error.Description)
 		return fmt.Errorf("code: %d, description: %s",
@@ -1489,4 +1515,12 @@ func (c *OceanStorClient) GetPerformance(resId string, dataIdList []string) (map
 	}
 
 	return perfMap, nil
+}
+
+func (c *OceanStorClient) checkErrorCode(err Error, code int) bool {
+	if inErr, ok := err.(*ArrayInnerError); ok && inErr.Err.Code == code {
+		return true
+	}
+
+	return false
 }
