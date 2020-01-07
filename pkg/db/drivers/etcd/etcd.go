@@ -30,6 +30,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/opensds/opensds/pkg/utils/config"
+
 	log "github.com/golang/glog"
 	c "github.com/opensds/opensds/pkg/context"
 	"github.com/opensds/opensds/pkg/model"
@@ -80,9 +82,9 @@ func AuthorizeProjectContext(ctx *c.Context, tenantId string) bool {
 }
 
 // NewClient
-func NewClient(edps []string) *Client {
+func NewClient(etcd *config.Database) *Client {
 	return &Client{
-		clientInterface: Init(edps),
+		clientInterface: Init(etcd),
 	}
 }
 
