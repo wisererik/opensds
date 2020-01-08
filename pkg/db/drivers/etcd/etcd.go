@@ -1428,6 +1428,8 @@ func (c *Client) CreateVolume(ctx *c.Context, vol *model.VolumeSpec) (*model.Vol
 	}
 
 	vol.TenantId = ctx.TenantId
+	// Set attached as false when creating volume
+	vol.Attached = new(bool)
 	volBody, err := json.Marshal(vol)
 	if err != nil {
 		return nil, err
@@ -1684,6 +1686,10 @@ func (c *Client) UpdateVolume(ctx *c.Context, vol *model.VolumeSpec) (*model.Vol
 	}
 	if vol.GroupId != "" {
 		result.GroupId = vol.GroupId
+	}
+
+	if vol.Attached != nil {
+		result.Attached = vol.Attached
 	}
 
 	// Set update time
