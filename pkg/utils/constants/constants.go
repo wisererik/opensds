@@ -40,6 +40,12 @@ const (
 	// OpensdsCaCertFile ...
 	OpensdsCaCertFile = "/opt/opensds-security/ca/ca-cert.pem"
 
+	// OpensdsClientCertFile ...
+	OpensdsClientCertFile = "/opt/opensds-security/opensds/client/client-cert.pem"
+
+	// OpensdsClientKeyFile ...
+	OpensdsClientKeyFile = "/opt/opensds-security/opensds/client/client-key.pem"
+
 	// OpensdsConfigPath indicates the absolute path of opensds global
 	// configuration file.
 	OpensdsConfigPath = "/etc/opensds/opensds.conf"

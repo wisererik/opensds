@@ -20,6 +20,7 @@ package cli
 
 import (
 	"log"
+	"net/url"
 	"os"
 
 	c "github.com/opensds/opensds/client"
@@ -89,6 +90,27 @@ func Run() error {
 	if !ok {
 		authStrategy = c.Noauth
 		Warnf("Not found Env OPENSDS_AUTH_STRATEGY, use default(noauth)\n")
+	}
+
+	u, _ := url.Parse(ep)
+	if u.Scheme == "https" {
+		cert, ok := os.LookupEnv(c.OpensdsClientCert)
+		if !ok {
+			cert = constants.OpensdsClientCertFile
+			Warnf("OPENSDS_CLIENT_CERT is not specified, use default(%s)\n", cert)
+		}
+		key, ok := os.LookupEnv(c.OpensdsClientKey)
+		if !ok {
+			key = constants.OpensdsClientKeyFile
+			Warnf("OPENSDS_CLIENT_KEY is not specified, use default(%s)\n", key)
+		}
+		cacert, ok := os.LookupEnv(c.OpensdsCACert)
+		if !ok {
+			cacert = constants.OpensdsCaCertFile
+			Warnf("OPENSDS_CA_CERT is not specified, use default(%s)\n", cacert)
+		}
+		certificates := c.NewCertificates(cert, key, cacert)
+		cfg.Certificates = certificates
 	}
 
 	var authOptions c.AuthOptions

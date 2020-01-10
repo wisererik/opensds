@@ -76,7 +76,9 @@ func NewFakeDockReceiver() Receiver {
 	return &fakeDockReceiver{}
 }
 
-type fakeDockReceiver struct{}
+type fakeDockReceiver struct{
+	tlsConfig *TLSConfig
+}
 
 func (*fakeDockReceiver) Recv(
 	string,
@@ -106,11 +108,18 @@ func (*fakeDockReceiver) Recv(
 	return nil
 }
 
+// sets tls connection configurations for https requests
+func (f *fakeDockReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	f.tlsConfig = tlsConfig
+}
+
 func NewFakePoolReceiver() Receiver {
 	return &fakePoolReceiver{}
 }
 
-type fakePoolReceiver struct{}
+type fakePoolReceiver struct{
+	tlsConfig *TLSConfig
+}
 
 func (*fakePoolReceiver) Recv(
 	string,
@@ -140,11 +149,18 @@ func (*fakePoolReceiver) Recv(
 	return nil
 }
 
+// sets tls connection configurations for https requests
+func (f *fakePoolReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	f.tlsConfig = tlsConfig
+}
+
 func NewFakeProfileReceiver() Receiver {
 	return &fakeProfileReceiver{}
 }
 
-type fakeProfileReceiver struct{}
+type fakeProfileReceiver struct{
+	tlsConfig *TLSConfig
+}
 
 func (*fakeProfileReceiver) Recv(
 	string,
@@ -210,11 +226,18 @@ func (*fakeProfileReceiver) Recv(
 	return nil
 }
 
+// sets tls connection configurations for https requests
+func (f *fakeProfileReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	f.tlsConfig = tlsConfig
+}
+
 func NewFakeVolumeReceiver() Receiver {
 	return &fakeVolumeReceiver{}
 }
 
-type fakeVolumeReceiver struct{}
+type fakeVolumeReceiver struct{
+	tlsConfig *TLSConfig
+}
 
 func (*fakeVolumeReceiver) Recv(
 	string,
@@ -304,11 +327,18 @@ func (*fakeVolumeReceiver) Recv(
 	return nil
 }
 
+// sets tls connection configurations for https requests
+func (f *fakeVolumeReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	f.tlsConfig = tlsConfig
+}
+
 func NewFakeReplicationReceiver() Receiver {
 	return &fakeReplicationReceiver{}
 }
 
-type fakeReplicationReceiver struct{}
+type fakeReplicationReceiver struct{
+	tlsConfig *TLSConfig
+}
 
 func (*fakeReplicationReceiver) Recv(
 	url string,
@@ -339,11 +369,18 @@ func (*fakeReplicationReceiver) Recv(
 	return errors.New("input method format not supported")
 }
 
+// sets tls connection configurations for https requests
+func (f *fakeReplicationReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	f.tlsConfig = tlsConfig
+}
+
 func NewFakeVersionReceiver() Receiver {
 	return &fakeVersionReceiver{}
 }
 
-type fakeVersionReceiver struct{}
+type fakeVersionReceiver struct{
+	tlsConfig *TLSConfig
+}
 
 func (*fakeVersionReceiver) Recv(
 	string,
@@ -377,11 +414,18 @@ func (*fakeVersionReceiver) Recv(
 	return nil
 }
 
+// sets tls connection configurations for https requests
+func (f *fakeVersionReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	f.tlsConfig = tlsConfig
+}
+
 func NewFakeFileShareReceiver() Receiver {
 	return &fakeFileShareReceiver{}
 }
 
-type fakeFileShareReceiver struct{}
+type fakeFileShareReceiver struct{
+	tlsConfig *TLSConfig
+}
 
 func (*fakeFileShareReceiver) Recv(
 	string,
@@ -445,11 +489,18 @@ func (*fakeFileShareReceiver) Recv(
 	return nil
 }
 
+// sets tls connection configurations for https requests
+func (f *fakeFileShareReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	f.tlsConfig = tlsConfig
+}
+
 func NewFakeHostReceiver() Receiver {
 	return &fakeHostReceiver{}
 }
 
-type fakeHostReceiver struct{}
+type fakeHostReceiver struct{
+	tlsConfig *TLSConfig
+}
 
 func (*fakeHostReceiver) Recv(
 	string,
@@ -487,4 +538,9 @@ func (*fakeHostReceiver) Recv(
 	}
 
 	return nil
+}
+
+// sets tls connection configurations for https requests
+func (f *fakeHostReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	f.tlsConfig = tlsConfig
 }

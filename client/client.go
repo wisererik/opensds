@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/opensds/opensds/pkg/utils/constants"
@@ -49,8 +48,9 @@ type Client struct {
 
 // Config is a struct that defines some options for calling the Client.
 type Config struct {
-	Endpoint    string
-	AuthOptions AuthOptions
+	Endpoint      string
+	AuthOptions   AuthOptions
+	Certificates  Certificates
 }
 
 // NewClient method creates a new Client.
@@ -62,7 +62,7 @@ func NewClient(c *Config) (*Client, error) {
 	}
 
 	// If https is enabled, CA cert file should be provided.
-	u, _ := url.Parse(c.Endpoint)
+	/*u, _ := url.Parse(c.Endpoint)
 	if u.Scheme == "https" {
 		cacert = constants.OpensdsCaCertFile
 		_, err := os.Stat(cacert)
@@ -71,7 +71,7 @@ func NewClient(c *Config) (*Client, error) {
 				return nil, fmt.Errorf("CA file(%s) doesn't exist", cacert)
 			}
 		}
-	}
+	}*/
 
 	var r Receiver
 	var err error
@@ -87,6 +87,11 @@ func NewClient(c *Config) (*Client, error) {
 		log.Println("WARNING: Not support auth options, use default(noauth).")
 		r = NewReceiver()
 		c.AuthOptions = NewNoauthOptions(constants.DefaultTenantId)
+	}
+
+	u, _ := url.Parse(c.Endpoint)
+	if u.Scheme == "https" {
+		r.SetTLSConfig(c.Certificates.(*TLSConfig))
 	}
 
 	t := c.AuthOptions.GetTenantId()
