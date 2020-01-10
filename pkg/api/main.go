@@ -56,6 +56,9 @@ func Run(apiServerCfg cfg.OsdsApiServer) {
 		beego.BConfig.Listen.HTTPSPort, _ = strconv.Atoi(strs[PortIdx])
 		beego.BConfig.Listen.HTTPSCertFile = apiServerCfg.BeegoHTTPSCertFile
 		beego.BConfig.Listen.HTTPSKeyFile = apiServerCfg.BeegoHTTPSKeyFile
+		beego.BConfig.Listen.EnableMutualHTTPS = true
+		beego.BConfig.Listen.TrustCaFile = apiServerCfg.BeegoCACertFile
+
 		tlsConfig := &tls.Config{
 			MinVersion: tls.VersionTLS12,
 			CipherSuites: []uint16{

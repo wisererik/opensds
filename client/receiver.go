@@ -95,13 +95,34 @@ func customVerify(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error
 	return nil
 }
 
-func request(urlStr string, method string, headers HeaderOption, input interface{}, output interface{}) error {
+func request(urlStr string, method string, headers HeaderOption, input interface{}, output interface{}, tlsInfo TLSOptions) error {
 	req := httplib.NewBeegoRequest(urlStr, strings.ToUpper(method))
 
 	u, _ := url.Parse(urlStr)
-	if u.Scheme == "https" && cacert != "" {
+	if u.Scheme == "https" {
 		log.Println("Https mode.")
-		req.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true, VerifyPeerCertificate: customVerify})
+
+		cert, err := tls.LoadX509KeyPair(tlsInfo.GetClientCertFile(), tlsInfo.GetClientKeyFile())
+		if err != nil {
+			log.Fatalf("loading key pair for client cert failed : %v", err)
+		}
+
+		rootCA, err := ioutil.ReadFile(tlsInfo.GetCACertFile())
+		if err != nil {
+			log.Fatalf("reading cert failed : %v", err)
+		}
+		rootCAPool := x509.NewCertPool()
+		rootCAPool.AppendCertsFromPEM(rootCA)
+		log.Println("RootCA loaded")
+
+		tlsConfig := &tls.Config{
+			ClientAuth: tls.RequireAndVerifyClientCert,
+			RootCAs:    rootCAPool,
+			GetClientCertificate: func(info *tls.CertificateRequestInfo) (*tls.Certificate, error) {
+				return &cert, nil
+			},
+		}
+		req.SetTLSClientConfig(tlsConfig)
 	}
 
 	// Set the request timeout a little bit longer upload snapshot to cloud temporarily.
@@ -154,7 +175,29 @@ type receiver struct{}
 func (*receiver) Recv(url string, method string, input interface{}, output interface{}) error {
 	headers := HeaderOption{}
 	headers["Content-Type"] = constants.ContentType
-	return request(url, method, headers, input, output)
+	return request(url, method, headers, input, output, TLSOptions{})
+}
+
+func NewHttpsReceiver(tlsOptions *TLSOptions) (Receiver, error) {
+	h := &HttpsReceiver{TLS: tlsOptions}
+	return h, nil
+}
+
+type HttpsReceiver struct {
+	TLS *TLSOptions
+}
+
+func (h *HttpsReceiver) Recv(url string, method string, input interface{}, output interface{}) error {
+	headers := HeaderOption{}
+	headers["Content-Type"] = constants.ContentType
+
+	tlsOptions := TLSOptions{
+		CertFile: h.TLS.GetClientCertFile(),
+		KeyFile: h.TLS.GetClientKeyFile(),
+		TrustedCAFile: h.TLS.GetCACertFile(),
+	}
+
+	return request(url, method, headers, input, output, tlsOptions)
 }
 
 func NewKeystoneReceiver(auth *KeystoneAuthOptions) (Receiver, error) {
@@ -222,7 +265,7 @@ func (k *KeystoneReceiver) Recv(url string, method string, body interface{}, out
 		headers := HeaderOption{}
 		headers["Content-Type"] = constants.ContentType
 		headers[constants.AuthTokenHeader] = k.Auth.TokenID
-		return request(url, method, headers, body, output)
+		return request(url, method, headers, body, output, TLSOptions{})
 	})
 }
 

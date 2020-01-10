@@ -49,8 +49,9 @@ type Client struct {
 
 // Config is a struct that defines some options for calling the Client.
 type Config struct {
-	Endpoint    string
-	AuthOptions AuthOptions
+	Endpoint      string
+	AuthOptions   AuthOptions
+	HttpsOptions  HttpsOptions
 }
 
 // NewClient method creates a new Client.
@@ -77,7 +78,15 @@ func NewClient(c *Config) (*Client, error) {
 	var err error
 	switch c.AuthOptions.(type) {
 	case *NoAuthOptions:
-		r = NewReceiver()
+		u, _ := url.Parse(c.Endpoint)
+		if u.Scheme == "https" {
+			r, err = NewHttpsReceiver(c.HttpsOptions.(*TLSOptions))
+			if err != nil {
+				return nil, fmt.Errorf("https call failed")
+			}
+		}else{
+			r = NewReceiver()
+		}
 	case *KeystoneAuthOptions:
 		r, err = NewKeystoneReceiver(c.AuthOptions.(*KeystoneAuthOptions))
 		if err != nil {
