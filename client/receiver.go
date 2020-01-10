@@ -99,9 +99,31 @@ func request(urlStr string, method string, headers HeaderOption, input interface
 	req := httplib.NewBeegoRequest(urlStr, strings.ToUpper(method))
 
 	u, _ := url.Parse(urlStr)
-	if u.Scheme == "https" && cacert != "" {
+	if u.Scheme == "https" {
 		log.Println("Https mode.")
-		req.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true, VerifyPeerCertificate: customVerify})
+
+		cert, err := tls.LoadX509KeyPair(constants.OpensdsClientCertFile, constants.OpensdsClientKeyFile)
+
+		if err != nil {
+			log.Fatalf("loading key pair for client cert failed : %v", err)
+		}
+
+		rootCA, err := ioutil.ReadFile(constants.OpensdsCaCertFile)
+		if err != nil {
+			log.Fatalf("reading cert failed : %v", err)
+		}
+		rootCAPool := x509.NewCertPool()
+		rootCAPool.AppendCertsFromPEM(rootCA)
+		log.Println("RootCA loaded")
+
+		tlsConfig := &tls.Config{
+			ClientAuth: tls.RequireAndVerifyClientCert,
+			RootCAs:    rootCAPool,
+			GetClientCertificate: func(info *tls.CertificateRequestInfo) (*tls.Certificate, error) {
+				return &cert, nil
+			},
+		}
+		req.SetTLSClientConfig(tlsConfig)
 	}
 
 	// Set the request timeout a little bit longer upload snapshot to cloud temporarily.
