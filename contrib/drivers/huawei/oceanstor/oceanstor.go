@@ -747,7 +747,7 @@ func (d *Driver) getMappedInfo(hostName string) (string, string, string, string,
 	hostId, err := d.client.GetHostIdByName(hostName)
 	if err != nil {
 		if IsNotFoundError(err) {
-			log.Warning("host(%s) has been removed already, ignore it.", hostName)
+			log.Warningf("host(%s) has been removed already, ignore it.", hostName)
 			return "", "", "", "", nil
 		}
 
