@@ -487,7 +487,7 @@ func (ds *dockServer) DeleteVolumeGroup(ctx context.Context, opt *pb.DeleteVolum
 	return pb.GenericResponseResult(nil), nil
 }
 
-func (ds *dockServer) deleteGroupGeneric(driver VolumeDriver, opt *pb.DeleteVolumeGroupOpts) error {
+func (ds *dockServer) deleteGroupGeneric(driver drivers.VolumeDriver, opt *pb.DeleteVolumeGroupOpts) error {
 	ctx := c.NewContextFromJson(opt.GetContext())
 
 	volumes, err := db.C.ListVolumesByGroupId(ctx, opt.GetId())
