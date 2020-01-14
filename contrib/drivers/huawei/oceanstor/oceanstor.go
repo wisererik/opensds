@@ -35,7 +35,12 @@ type Driver struct {
 	client *OceanStorClient
 }
 
-func (d *Driver) Setup() (err error) {
+func (d *Driver) Setup() error {
+	if d.client != nil {
+		// Login already, return
+		return nil
+	}
+
 	// Read huawei oceanstor config file
 	conf := &OceanStorConfig{}
 	d.conf = conf
@@ -44,17 +49,29 @@ func (d *Driver) Setup() (err error) {
 	if "" == path {
 		path = defaultConfPath
 	}
+
 	Parse(conf, path)
-	d.client, err = NewClient(&d.conf.AuthOptions)
+
+	client, err := NewClient(&d.conf.AuthOptions)
 	if err != nil {
 		log.Errorf("Get new client failed, %v", err)
 		return err
 	}
+
+	err = client.login()
+	if err != nil {
+		log.Errorf("Client login failed, %v", err)
+		return err
+	}
+
+	d.client = client
 	return nil
 }
 
 func (d *Driver) Unset() error {
-	d.client.logout()
+	if d.client != nil {
+		d.client.logout()
+	}
 	return nil
 }
 

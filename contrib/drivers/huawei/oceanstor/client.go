@@ -82,15 +82,13 @@ func NewClient(opt *AuthOptions) (*OceanStorClient, error) {
 		pwdCiphertext = password
 	}
 
-	c := &OceanStorClient{
+	return &OceanStorClient{
 		user:       opt.Username,
 		passwd:     pwdCiphertext,
 		vstoreName: opt.VstoreName,
 		endpoints:  endpoints,
 		insecure:   opt.Insecure,
-	}
-	err := c.login()
-	return c, err
+	}, nil
 }
 
 func (c *OceanStorClient) Destroy() error {
