@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/opensds/opensds/pkg/utils/constants"
@@ -49,8 +48,9 @@ type Client struct {
 
 // Config is a struct that defines some options for calling the Client.
 type Config struct {
-	Endpoint    string
-	AuthOptions AuthOptions
+	Endpoint      string
+	AuthOptions   AuthOptions
+	HttpsOptions  HttpsOptions
 }
 
 // NewClient method creates a new Client.
@@ -62,7 +62,7 @@ func NewClient(c *Config) (*Client, error) {
 	}
 
 	// If https is enabled, CA cert file should be provided.
-	u, _ := url.Parse(c.Endpoint)
+	/*u, _ := url.Parse(c.Endpoint)
 	if u.Scheme == "https" {
 		cacert = constants.OpensdsCaCertFile
 		_, err := os.Stat(cacert)
@@ -71,13 +71,26 @@ func NewClient(c *Config) (*Client, error) {
 				return nil, fmt.Errorf("CA file(%s) doesn't exist", cacert)
 			}
 		}
-	}
+	}*/
 
 	var r Receiver
 	var err error
 	switch c.AuthOptions.(type) {
 	case *NoAuthOptions:
-		r = NewReceiver()
+		u, _ := url.Parse(c.Endpoint)
+		if u.Scheme == "https" {
+			r, err = NewHttpsReceiver(c.HttpsOptions.(*TLSOptions))
+			if err != nil {
+				return nil, fmt.Errorf("https call failed")
+			}
+		}else{
+			r = NewReceiver()
+		}
+	/*case *TLSOptions:
+		r, err = NewHttpsReceiver(c.HttpsOptions.(*TLSOptions))
+		if err != nil {
+			return nil, fmt.Errorf("https call failed")
+		}*/
 	case *KeystoneAuthOptions:
 		r, err = NewKeystoneReceiver(c.AuthOptions.(*KeystoneAuthOptions))
 		if err != nil {

@@ -95,20 +95,21 @@ func customVerify(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error
 	return nil
 }
 
-func request(urlStr string, method string, headers HeaderOption, input interface{}, output interface{}) error {
+func request(urlStr string, method string, headers HeaderOption, input interface{}, output interface{}, tlsInfo TLSOptions) error {
 	req := httplib.NewBeegoRequest(urlStr, strings.ToUpper(method))
 
 	u, _ := url.Parse(urlStr)
 	if u.Scheme == "https" {
 		log.Println("Https mode.")
 
-		cert, err := tls.LoadX509KeyPair(constants.OpensdsClientCertFile, constants.OpensdsClientKeyFile)
-
+		//cert, err := tls.LoadX509KeyPair(constants.OpensdsClientCertFile, constants.OpensdsClientKeyFile)
+		cert, err := tls.LoadX509KeyPair(tlsInfo.GetClientCertFile(), tlsInfo.GetClientKeyFile())
 		if err != nil {
 			log.Fatalf("loading key pair for client cert failed : %v", err)
 		}
 
-		rootCA, err := ioutil.ReadFile(constants.OpensdsCaCertFile)
+		//rootCA, err := ioutil.ReadFile(constants.OpensdsCaCertFile)
+		rootCA, err := ioutil.ReadFile(tlsInfo.GetCACertFile())
 		if err != nil {
 			log.Fatalf("reading cert failed : %v", err)
 		}
@@ -176,7 +177,28 @@ type receiver struct{}
 func (*receiver) Recv(url string, method string, input interface{}, output interface{}) error {
 	headers := HeaderOption{}
 	headers["Content-Type"] = constants.ContentType
-	return request(url, method, headers, input, output)
+	return request(url, method, headers, input, output, TLSOptions{})
+}
+
+func NewHttpsReceiver(tlsOptions *TLSOptions) (Receiver, error) {
+	h := &HttpsReceiver{TLS: tlsOptions}
+	return h, nil
+}
+
+type HttpsReceiver struct {
+	TLS *TLSOptions
+}
+
+func (h *HttpsReceiver) Recv(url string, method string, input interface{}, output interface{}) error {
+	headers := HeaderOption{}
+	headers["Content-Type"] = constants.ContentType
+	tlsOptions := TLSOptions{
+		CertFile: h.TLS.GetClientCertFile(),
+		KeyFile: h.TLS.GetClientKeyFile(),
+		TrustedCAFile: h.TLS.GetCACertFile(),
+	}
+	h.TLS.GetClientCertFile()
+	return request(url, method, headers, input, output, tlsOptions)
 }
 
 func NewKeystoneReceiver(auth *KeystoneAuthOptions) (Receiver, error) {
@@ -244,7 +266,7 @@ func (k *KeystoneReceiver) Recv(url string, method string, body interface{}, out
 		headers := HeaderOption{}
 		headers["Content-Type"] = constants.ContentType
 		headers[constants.AuthTokenHeader] = k.Auth.TokenID
-		return request(url, method, headers, body, output)
+		return request(url, method, headers, body, output, TLSOptions{})
 	})
 }
 

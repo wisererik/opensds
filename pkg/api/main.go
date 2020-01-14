@@ -20,10 +20,7 @@ package api
 
 import (
 	"crypto/tls"
-	"crypto/x509"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strconv"
 	"strings"
 
@@ -59,8 +56,10 @@ func Run(apiServerCfg cfg.OsdsApiServer) {
 		beego.BConfig.Listen.HTTPSPort, _ = strconv.Atoi(strs[PortIdx])
 		beego.BConfig.Listen.HTTPSCertFile = apiServerCfg.BeegoHTTPSCertFile
 		beego.BConfig.Listen.HTTPSKeyFile = apiServerCfg.BeegoHTTPSKeyFile
+		beego.BConfig.Listen.EnableMutualHTTPS = true
+		beego.BConfig.Listen.TrustCaFile = apiServerCfg.BeegoCACertFile
 
-		cert, err := tls.LoadX509KeyPair(apiServerCfg.BeegoHTTPSCertFile, apiServerCfg.BeegoHTTPSKeyFile)
+		/*cert, err := tls.LoadX509KeyPair(apiServerCfg.BeegoHTTPSCertFile, apiServerCfg.BeegoHTTPSKeyFile)
 		if err != nil {
 			log.Fatalf("loading key pair for server cert failed : %v", err)
 		}
@@ -79,6 +78,14 @@ func Run(apiServerCfg cfg.OsdsApiServer) {
 			ClientCAs:    clientCAPool,
 			GetCertificate: func(info *tls.ClientHelloInfo) (certificate *tls.Certificate, e error) {
 				return &cert, nil
+			},
+		}*/
+		tlsConfig := &tls.Config{
+			MinVersion: tls.VersionTLS12,
+			CipherSuites: []uint16{
+				tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+				tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+				tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
 			},
 		}
 
