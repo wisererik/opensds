@@ -6,7 +6,7 @@ require (
 	github.com/LINBIT/godrbdutils v0.0.0-20180425110027-65b98a0f103a
 	github.com/RoaringBitmap/roaring v0.4.21 // indirect
 	github.com/appleboy/easyssh-proxy v1.2.0
-	github.com/astaxie/beego v1.11.1
+	github.com/astaxie/beego v1.12.0
 	github.com/beorn7/perks v1.0.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/ceph/go-ceph v0.0.0-20170728144007-81e4191e131b
@@ -40,6 +40,7 @@ require (
 	github.com/prometheus/procfs v0.0.0-20190425082905-87a4384529e0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/segmentio/kafka-go v0.2.2
+	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/soheilhy/cmux v0.1.4 // indirect
 	github.com/spf13/cobra v0.0.3
