@@ -197,7 +197,6 @@ func (h *HttpsReceiver) Recv(url string, method string, input interface{}, outpu
 		KeyFile: h.TLS.GetClientKeyFile(),
 		TrustedCAFile: h.TLS.GetCACertFile(),
 	}
-	h.TLS.GetClientCertFile()
 	return request(url, method, headers, input, output, tlsOptions)
 }
 

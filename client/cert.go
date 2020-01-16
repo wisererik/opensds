@@ -14,6 +14,13 @@
 
 package client
 
+const (
+	//Opensds Certificate ENVs
+	OpensdsClientCert = "OPENSDS_CLIENT_CERT"
+	OpensdsClientKey  = "OPENSDS_CLIENT_KEY"
+	OpensdsCACert     = "OPENSDS_CA_CERT"
+)
+
 type HttpsOptions interface {
 	GetClientCertFile() string
 	GetClientKeyFile() string
@@ -21,15 +28,15 @@ type HttpsOptions interface {
 }
 
 type TLSOptions struct {
-	CertFile       string
-	KeyFile        string
-	TrustedCAFile  string
+	CertFile      string
+	KeyFile       string
+	TrustedCAFile string
 }
 
 func NewKHttpsOptions(certFile string, keyFile string, caCertFile string) *TLSOptions {
 	return &TLSOptions{
-		CertFile: certFile,
-		KeyFile: keyFile,
+		CertFile:      certFile,
+		KeyFile:       keyFile,
 		TrustedCAFile: caCertFile,
 	}
 }
