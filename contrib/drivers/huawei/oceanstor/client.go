@@ -1020,7 +1020,7 @@ func (c *OceanStorClient) GetHostLunId(hostId, lunId string) (int, error) {
 func (c *OceanStorClient) RemoveLunFromLunGroup(lunGrpId, lunId string) error {
 	url := fmt.Sprintf("/lungroup/associate?ID=%s&ASSOCIATEOBJTYPE=11&ASSOCIATEOBJID=%s", lunGrpId, lunId)
 	if err := c.request("DELETE", url, nil, nil); err != nil {
-		if c.checkErrorCode(err, ErrorObjectUnavailable) {
+		if c.checkErrorCode(err, ErrorObjectUnavailable) || c.checkErrorCode(err, ErrorLunNotExist) {
 			return nil
 		}
 
