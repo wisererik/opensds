@@ -620,7 +620,7 @@ func (d *Driver) connectFCUseNoSwitch(opt *pb.CreateVolumeAttachmentOpts, initia
 			continue
 		}
 
-		if initiator.Isfree {
+		if len(initiator.ParentId) == 0 {
 			addWWNs = append(addWWNs, wwn)
 		} else if initiator.ParentId != hostId {
 			msg := fmt.Sprintf("FC initiator %s is already associated to another host %s", wwn, initiator.ParentId)
