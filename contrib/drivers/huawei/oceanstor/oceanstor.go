@@ -676,6 +676,9 @@ func (d *Driver) detachVolumeFC(opt *pb.DeleteVolumeAttachmentOpts) (string, err
 	if err != nil {
 		return "", err
 	}
+	if len(hostId) == 0 {
+		return "", nil
+	}
 
 	if lunId != "" && lunGrpId != "" {
 		if err := d.client.RemoveLunFromLunGroup(lunGrpId, lunId); err != nil {
