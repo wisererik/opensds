@@ -109,8 +109,8 @@ func Run() error {
 			cacert = constants.OpensdsCaCertFile
 			Warnf("OPENSDS_CA_CERT is not specified, use default(%s)\n", cacert)
 		}
-		httpsOptions := c.NewKHttpsOptions(cert, key, cacert)
-		cfg.HttpsOptions = httpsOptions
+		certificates := c.NewCertificates(cert, key, cacert)
+		cfg.Certificates = certificates
 	}
 
 	var authOptions c.AuthOptions

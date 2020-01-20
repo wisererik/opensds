@@ -21,34 +21,34 @@ const (
 	OpensdsCACert     = "OPENSDS_CA_CERT"
 )
 
-type HttpsOptions interface {
+type Certificates interface {
 	GetClientCertFile() string
 	GetClientKeyFile() string
 	GetCACertFile() string
 }
 
-type TLSOptions struct {
+type TLSConfig struct {
 	CertFile      string
 	KeyFile       string
 	TrustedCAFile string
 }
 
-func NewKHttpsOptions(certFile string, keyFile string, caCertFile string) *TLSOptions {
-	return &TLSOptions{
+func NewCertificates(certFile string, keyFile string, caCertFile string) *TLSConfig {
+	return &TLSConfig{
 		CertFile:      certFile,
 		KeyFile:       keyFile,
 		TrustedCAFile: caCertFile,
 	}
 }
 
-func (cert *TLSOptions) GetClientCertFile() string {
+func (cert *TLSConfig) GetClientCertFile() string {
 	return cert.CertFile
 }
 
-func (cert *TLSOptions) GetClientKeyFile() string {
+func (cert *TLSConfig) GetClientKeyFile() string {
 	return cert.KeyFile
 }
 
-func (cert *TLSOptions) GetCACertFile() string {
+func (cert *TLSConfig) GetCACertFile() string {
 	return cert.TrustedCAFile
 }

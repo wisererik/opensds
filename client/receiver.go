@@ -63,6 +63,7 @@ type HeaderOption map[string]string
 // Receiver
 type Receiver interface {
 	Recv(url string, method string, input interface{}, output interface{}) error
+	SetTLSConfig(tlsConfig *TLSConfig)
 }
 
 // NewReceiver
@@ -95,19 +96,19 @@ func customVerify(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error
 	return nil
 }
 
-func request(urlStr string, method string, headers HeaderOption, input interface{}, output interface{}, tlsInfo TLSOptions) error {
+func request(urlStr string, method string, headers HeaderOption, input interface{}, output interface{}, tlsConfig *TLSConfig) error {
 	req := httplib.NewBeegoRequest(urlStr, strings.ToUpper(method))
 
 	u, _ := url.Parse(urlStr)
 	if u.Scheme == "https" {
 		log.Println("Https mode.")
 
-		cert, err := tls.LoadX509KeyPair(tlsInfo.GetClientCertFile(), tlsInfo.GetClientKeyFile())
+		cert, err := tls.LoadX509KeyPair(tlsConfig.GetClientCertFile(), tlsConfig.GetClientKeyFile())
 		if err != nil {
 			log.Fatalf("loading key pair for client cert failed : %v", err)
 		}
 
-		rootCA, err := ioutil.ReadFile(tlsInfo.GetCACertFile())
+		rootCA, err := ioutil.ReadFile(tlsConfig.GetCACertFile())
 		if err != nil {
 			log.Fatalf("reading cert failed : %v", err)
 		}
@@ -116,7 +117,6 @@ func request(urlStr string, method string, headers HeaderOption, input interface
 		log.Println("RootCA loaded")
 
 		tlsConfig := &tls.Config{
-			ClientAuth: tls.RequireAndVerifyClientCert,
 			RootCAs:    rootCAPool,
 			GetClientCertificate: func(info *tls.CertificateRequestInfo) (*tls.Certificate, error) {
 				return &cert, nil
@@ -170,34 +170,40 @@ func request(urlStr string, method string, headers HeaderOption, input interface
 	return nil
 }
 
-type receiver struct{}
+type receiver struct{
+	tlsConfig *TLSConfig
+}
 
-func (*receiver) Recv(url string, method string, input interface{}, output interface{}) error {
+func (r *receiver) Recv(url string, method string, input interface{}, output interface{}) error {
 	headers := HeaderOption{}
 	headers["Content-Type"] = constants.ContentType
-	return request(url, method, headers, input, output, TLSOptions{})
+	return request(url, method, headers, input, output, r.tlsConfig)
 }
 
-func NewHttpsReceiver(tlsOptions *TLSOptions) (Receiver, error) {
-	h := &HttpsReceiver{TLS: tlsOptions}
-	return h, nil
+// sets tls connection configurations for https requests
+func (r *receiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	r.tlsConfig = tlsConfig
 }
 
-type HttpsReceiver struct {
-	TLS *TLSOptions
+func NewBasicAuthReceiver(tlsConfig *TLSConfig) (Receiver, error) {
+	b := &BasicAuthReceiver{tlsConfig: tlsConfig}
+	return b, nil
 }
 
-func (h *HttpsReceiver) Recv(url string, method string, input interface{}, output interface{}) error {
+type BasicAuthReceiver struct {
+	tlsConfig *TLSConfig
+}
+
+func (b *BasicAuthReceiver) Recv(url string, method string, input interface{}, output interface{}) error {
 	headers := HeaderOption{}
 	headers["Content-Type"] = constants.ContentType
 
-	tlsOptions := TLSOptions{
-		CertFile: h.TLS.GetClientCertFile(),
-		KeyFile: h.TLS.GetClientKeyFile(),
-		TrustedCAFile: h.TLS.GetCACertFile(),
-	}
+	return request(url, method, headers, input, output, b.tlsConfig)
+}
 
-	return request(url, method, headers, input, output, tlsOptions)
+// sets tls connection configurations for https requests
+func (b *BasicAuthReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	 b.tlsConfig = tlsConfig
 }
 
 func NewKeystoneReceiver(auth *KeystoneAuthOptions) (Receiver, error) {
@@ -211,6 +217,7 @@ func NewKeystoneReceiver(auth *KeystoneAuthOptions) (Receiver, error) {
 
 type KeystoneReceiver struct {
 	Auth *KeystoneAuthOptions
+	tlsConfig *TLSConfig
 }
 
 func (k *KeystoneReceiver) GetToken() error {
@@ -265,8 +272,13 @@ func (k *KeystoneReceiver) Recv(url string, method string, body interface{}, out
 		headers := HeaderOption{}
 		headers["Content-Type"] = constants.ContentType
 		headers[constants.AuthTokenHeader] = k.Auth.TokenID
-		return request(url, method, headers, body, output, TLSOptions{})
+		return request(url, method, headers, body, output, k.tlsConfig)
 	})
+}
+
+// sets tls connection configurations for https requests
+func (k *KeystoneReceiver) SetTLSConfig(tlsConfig *TLSConfig) {
+	k.tlsConfig = tlsConfig
 }
 
 func checkHTTPResponseStatusCode(resp *http.Response) error {
