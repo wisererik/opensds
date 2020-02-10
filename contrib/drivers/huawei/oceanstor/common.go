@@ -25,11 +25,17 @@ type Replication struct {
 	RemoteAuthOpt AuthOptions `yaml:"remoteAuthOptions"`
 }
 
+type LunPolicy struct {
+	LunIdRangeMin int64 `yaml:"lunIdRangeMin,omitempty"`
+	LunIdRangeMax int64 `yaml:"lunIdRangeMax,omitempty"`
+}
+
 type OceanStorConfig struct {
 	AuthOptions `yaml:"authOptions"`
 	Replication `yaml:"replication"`
 	Pool        map[string]PoolProperties `yaml:"pool,flow"`
 	TargetIp    string                    `yaml:"targetIp,omitempty"`
+	LunPolicy   `yaml:"LunPolicy"`
 }
 
 const UnitGi = 1024 * 1024 * 1024
