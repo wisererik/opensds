@@ -127,9 +127,9 @@ func (d *Driver) createVolumeFromSnapshot(opt *pb.CreateVolumeOpts) (*model.Volu
 	var err error
 
 	if !d.limitLunIdRange {
-		lun, err = d.client.CreateVolume(EncodeName(opt.GetId()), opt.GetSize(), desc, poolId, provPolicy, "")
+		lun, err = d.client.CreateVolume(EncodeName(opt.GetId()), opt.GetSize(), volumeDesc, poolId, provPolicy, "")
 	} else {
-		lun, err = d.createVolumeWithId(EncodeName(opt.GetId()), opt.GetSize(), desc, poolId, provPolicy)
+		lun, err = d.createVolumeWithId(EncodeName(opt.GetId()), opt.GetSize(), volumeDesc, poolId, provPolicy)
 	}
 
 	if err != nil {
@@ -287,7 +287,8 @@ func (d *Driver) DeleteVolume(opt *pb.DeleteVolumeOpts) error {
 
 	log.Info("Remove volume success, volume id =", opt.GetId())
 	if d.limitLunIdRange {
-		d.removeAvailableLunId(lunId)
+		id := strconv.ParseInt(lunId, 10, 64)
+		d.removeAvailableLunId(id)
 	}
 
 	return nil
