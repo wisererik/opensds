@@ -979,9 +979,9 @@ func (d *Driver) createVolumeWithId(name string, size int64, desc, poolId, provP
 
 func (d *Driver) tryCreateVolumeWithId(name string, size int64, desc, poolId, provPolicy string) (*Lun, error) {
 	for id, _ := range d.availableLunIds {
-		lunId := strconv.FormatInt(id, 10)
+		log.Infof("Try to create volume with ID %d", id)
 
-		log.Infof("Try to create volume with ID %d", lunId)
+		lunId := strconv.FormatInt(id, 10)
 		lun, err := d.client.CreateVolume(name, size, desc, poolId, provPolicy, lunId)
 		if err == nil {
 			d.removeAvailableLunId(id)
