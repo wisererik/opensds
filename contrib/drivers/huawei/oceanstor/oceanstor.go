@@ -902,6 +902,8 @@ func (d *Driver) DeleteVolumeGroup(opt *pb.DeleteVolumeGroupOpts) error {
 }
 
 func (d *Driver) getAvailableLunIds(lunIdRangeMin, lunIdRangeMax int64) error {
+	log.Infof("Try to get available lun IDs among [%d-%d]", lunIdRangeMin, lunIdRangeMax)
+
 	for i := lunIdRangeMin; i <= lunIdRangeMax; i++ {
 		d.addAvailableLunId(i)
 	}
@@ -978,6 +980,8 @@ func (d *Driver) createVolumeWithId(name string, size int64, desc, poolId, provP
 func (d *Driver) tryCreateVolumeWithId(name string, size int64, desc, poolId, provPolicy string) (*Lun, error) {
 	for id, _ := range d.availableLunIds {
 		lunId := strconv.FormatInt(id, 10)
+
+		log.Infof("Try to create volume with ID %d", lunId)
 		lun, err := d.client.CreateVolume(name, size, desc, poolId, provPolicy, lunId)
 		if err == nil {
 			d.removeAvailableLunId(id)

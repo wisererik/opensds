@@ -35,7 +35,7 @@ type OceanStorConfig struct {
 	Replication `yaml:"replication"`
 	Pool        map[string]PoolProperties `yaml:"pool,flow"`
 	TargetIp    string                    `yaml:"targetIp,omitempty"`
-	LunPolicy   `yaml:"LunPolicy"`
+	LunPolicy   `yaml:"lunPolicy"`
 }
 
 const UnitGi = 1024 * 1024 * 1024
