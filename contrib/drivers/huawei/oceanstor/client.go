@@ -56,6 +56,14 @@ func IsNotFoundError(err error) bool {
 	return false
 }
 
+type IdInUseError struct {
+	id string
+}
+
+func (e *IdInUseError) Error() string {
+	return fmt.Sprintf("Id %s already in use", e.id)
+}
+
 type OceanStorClient struct {
 	user       string
 	passwd     string
@@ -221,7 +229,7 @@ func (c *OceanStorClient) logout() error {
 	return c.request("DELETE", "/sessions", nil, nil)
 }
 
-func (c *OceanStorClient) CreateVolume(name string, size int64, desc string, poolId string, provPolicy string) (*Lun, error) {
+func (c *OceanStorClient) CreateVolume(name string, size int64, desc, poolId, provPolicy, id string) (*Lun, error) {
 	// default alloc type is thick
 	allocType := ThickLunType
 	if provPolicy == "Thin" {
@@ -235,8 +243,17 @@ func (c *OceanStorClient) CreateVolume(name string, size int64, desc string, poo
 		"PARENTID":    poolId,
 		"WRITEPOLICY": 1,
 	}
+
+	if id != "" {
+		data["ID"] = id
+	}
+
 	lun := &LunResp{}
 	err := c.request("POST", "/lun", data, lun)
+	if c.checkErrorCode(err, ErrorObjectIDNotUnique) {
+		return nil, &IdInUseError{id: id}
+	}
+
 	return &lun.Data, err
 }
 
@@ -305,6 +322,19 @@ func (c *OceanStorClient) GetVolumeByName(name string) (*Lun, error) {
 	}
 	return &lun.Data, err
 }
+
+func (c *OceanStorClient) GetVolumesByRange(rangeStart, rangeEnd int64) ([]Lun, error) {
+	luns := &LunsResp{}
+	url := fmt.Sprintf("/lun?range=[%d-%d]", rangeStart, rangeEnd)
+
+	err := c.request("GET", url, nil, luns)
+	if err != nil {
+		return nil, err
+	}
+
+	return luns.Data, err
+}
+
 func (c *OceanStorClient) DeleteVolume(id string) error {
 	err := c.request("DELETE", "/lun/"+id, nil, nil)
 	// If the lun already doesn't exist, delete command should not return err

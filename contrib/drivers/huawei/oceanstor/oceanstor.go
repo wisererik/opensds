@@ -18,7 +18,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
+	"sync"
 
 	log "github.com/golang/glog"
 	. "github.com/opensds/opensds/contrib/drivers/utils"
@@ -33,6 +35,12 @@ import (
 type Driver struct {
 	conf   *OceanStorConfig
 	client *OceanStorClient
+
+	limitLunIdRange bool
+	availableLunIds map[int64]bool
+
+	createVolumeMutex sync.Mutex
+	attachDetachMutex sync.Mutex
 }
 
 func (d *Driver) Setup() error {
@@ -52,6 +60,12 @@ func (d *Driver) Setup() error {
 
 	Parse(conf, path)
 
+	if d.conf.LunIdRangeMin < 0 || d.conf.LunIdRangeMax < 0 {
+		msg := fmt.Sprintf("specified lun ID range [%d-%d] is invalid", d.conf.LunIdRangeMin, d.conf.LunIdRangeMax)
+		log.Error(msg)
+		return errors.New(msg)
+	}
+
 	client, err := NewClient(&d.conf.AuthOptions)
 	if err != nil {
 		log.Errorf("Get new client failed, %v", err)
@@ -65,6 +79,17 @@ func (d *Driver) Setup() error {
 	}
 
 	d.client = client
+
+	if d.conf.LunIdRangeMax > 0 {
+		d.limitLunIdRange = true
+		d.availableLunIds = make(map[int64]bool)
+
+		err := d.getAvailableLunIds(d.conf.LunIdRangeMin, d.conf.LunIdRangeMax)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -97,8 +122,16 @@ func (d *Driver) createVolumeFromSnapshot(opt *pb.CreateVolumeOpts) (*model.Volu
 	if provPolicy == "" {
 		provPolicy = "Thick"
 	}
-	lun, err := d.client.CreateVolume(EncodeName(opt.GetId()), opt.GetSize(),
-		volumeDesc, poolId, provPolicy)
+
+	var lun *Lun
+	var err error
+
+	if !d.limitLunIdRange {
+		lun, err = d.client.CreateVolume(EncodeName(opt.GetId()), opt.GetSize(), volumeDesc, poolId, provPolicy, "")
+	} else {
+		lun, err = d.createVolumeWithId(EncodeName(opt.GetId()), opt.GetSize(), volumeDesc, poolId, provPolicy)
+	}
+
 	if err != nil {
 		log.Error("Create Volume Failed:", err)
 		return nil, err
@@ -180,24 +213,37 @@ func (d *Driver) copyVolume(opt *pb.CreateVolumeOpts, srcid, tgtid string) error
 }
 
 func (d *Driver) CreateVolume(opt *pb.CreateVolumeOpts) (*model.VolumeSpec, error) {
+	d.createVolumeMutex.Lock()
+	defer d.createVolumeMutex.Unlock()
+
 	if opt.GetSnapshotId() != "" {
 		return d.createVolumeFromSnapshot(opt)
 	}
+
 	name := EncodeName(opt.GetId())
 	desc := TruncateDescription(opt.GetDescription())
 	poolId, err := d.client.GetPoolIdByName(opt.GetPoolName())
 	if err != nil {
 		return nil, err
 	}
+
 	provPolicy := d.conf.Pool[opt.GetPoolName()].Extras.DataStorage.ProvisioningPolicy
 	if provPolicy == "" {
 		provPolicy = "Thick"
 	}
-	lun, err := d.client.CreateVolume(name, opt.GetSize(), desc, poolId, provPolicy)
+
+	var lun *Lun
+	if !d.limitLunIdRange {
+		lun, err = d.client.CreateVolume(name, opt.GetSize(), desc, poolId, provPolicy, "")
+	} else {
+		lun, err = d.createVolumeWithId(name, opt.GetSize(), desc, poolId, provPolicy)
+	}
+
 	if err != nil {
 		log.Error("Create Volume Failed:", err)
 		return nil, err
 	}
+
 	log.Infof("Create volume %s (%s) success.", opt.GetName(), lun.Id)
 	return &model.VolumeSpec{
 		BaseModel: &model.BaseModel{
@@ -238,7 +284,13 @@ func (d *Driver) DeleteVolume(opt *pb.DeleteVolumeOpts) error {
 		log.Errorf("Delete volume failed, volume id =%s , Error:%s", opt.GetId(), err)
 		return err
 	}
+
 	log.Info("Remove volume success, volume id =", opt.GetId())
+	if d.limitLunIdRange {
+		id, _ := strconv.ParseInt(lunId, 10, 64)
+		d.removeAvailableLunId(id)
+	}
+
 	return nil
 }
 
@@ -283,6 +335,9 @@ func (d *Driver) getTargetInfo() (string, string, error) {
 }
 
 func (d *Driver) InitializeConnection(opt *pb.CreateVolumeAttachmentOpts) (*model.ConnectionInfo, error) {
+	d.attachDetachMutex.Lock()
+	defer d.attachDetachMutex.Unlock()
+
 	if opt.GetAccessProtocol() == ISCSIProtocol {
 		return d.InitializeConnectionIscsi(opt)
 	}
@@ -348,6 +403,9 @@ func (d *Driver) InitializeConnectionIscsi(opt *pb.CreateVolumeAttachmentOpts) (
 }
 
 func (d *Driver) TerminateConnection(opt *pb.DeleteVolumeAttachmentOpts) error {
+	d.attachDetachMutex.Lock()
+	defer d.attachDetachMutex.Unlock()
+
 	if opt.GetAccessProtocol() == ISCSIProtocol {
 		return d.TerminateConnectionIscsi(opt)
 	}
@@ -841,4 +899,112 @@ func (d *Driver) UpdateVolumeGroup(opt *pb.UpdateVolumeGroupOpts) (*model.Volume
 
 func (d *Driver) DeleteVolumeGroup(opt *pb.DeleteVolumeGroupOpts) error {
 	return &model.NotImplementError{"method DeleteVolumeGroup has not been implemented yet"}
+}
+
+func (d *Driver) getAvailableLunIds(lunIdRangeMin, lunIdRangeMax int64) error {
+	log.Infof("Try to get available lun IDs among [%d-%d]", lunIdRangeMin, lunIdRangeMax)
+
+	for i := lunIdRangeMin; i <= lunIdRangeMax; i++ {
+		d.addAvailableLunId(i)
+	}
+
+	var i int64 = 0
+	for ; ; i++ {
+		luns, err := d.client.GetVolumesByRange(i*500, (i+1)*500)
+		if err != nil {
+			log.Errorf("Batch query volumes error: %v", err)
+			return err
+		}
+
+		if len(luns) == 0 {
+			return nil
+		}
+
+		lastIndex := len(luns) - 1
+		lastId, _ := strconv.ParseInt(luns[lastIndex].Id, 10, 64)
+		firstId, _ := strconv.ParseInt(luns[0].Id, 10, 64)
+
+		if lastId <= lunIdRangeMin {
+			continue
+		} else if firstId >= lunIdRangeMax {
+			return nil
+		}
+
+		for _, lun := range luns {
+			id, _ := strconv.ParseInt(lun.Id, 10, 64)
+			if _, exist := d.availableLunIds[id]; exist {
+				d.removeAvailableLunId(id)
+			} else if id >= lunIdRangeMax {
+				return nil
+			}
+		}
+	}
+}
+
+func (d *Driver) createVolumeWithId(name string, size int64, desc, poolId, provPolicy string) (*Lun, error) {
+	var lunIdsRefreshed bool
+
+	for i := 0; i < 2; i++ {
+		if len(d.availableLunIds) == 0 {
+			err := d.getAvailableLunIds(d.conf.LunIdRangeMin, d.conf.LunIdRangeMax)
+			if err != nil {
+				return nil, err
+			}
+
+			lunIdsRefreshed = true
+		}
+
+		lun, err := d.tryCreateVolumeWithId(name, size, desc, poolId, provPolicy)
+		if err != nil {
+			return nil, err
+		}
+		if lun != nil {
+			return lun, nil
+		}
+
+		// if already called getAvailableLunIds above, won't try to refresh availableLunIds again
+		if lunIdsRefreshed {
+			msg := fmt.Sprintf("cannot find available id between [%d-%d]",
+				d.conf.LunIdRangeMin, d.conf.LunIdRangeMax)
+			log.Error(msg)
+			return nil, errors.New(msg)
+		}
+	}
+
+	// shouldn't come here, just in case
+	msg := fmt.Sprintf("something odd happened while creating volume %s", name)
+	log.Error(msg)
+	return nil, errors.New(msg)
+}
+
+func (d *Driver) tryCreateVolumeWithId(name string, size int64, desc, poolId, provPolicy string) (*Lun, error) {
+	for id, _ := range d.availableLunIds {
+		log.Infof("Try to create volume with ID %d", id)
+
+		lunId := strconv.FormatInt(id, 10)
+		lun, err := d.client.CreateVolume(name, size, desc, poolId, provPolicy, lunId)
+		if err == nil {
+			d.removeAvailableLunId(id)
+			return lun, nil
+		}
+
+		if _, ok := err.(*IdInUseError); ok {
+			// if oceanstor returns IdInUseError, continue to try next id
+			log.Warningf("Id %d already in use, try next one.", id)
+			d.removeAvailableLunId(id)
+			continue
+		} else {
+			return nil, err
+		}
+	}
+
+	return nil, nil
+}
+
+func (d *Driver) addAvailableLunId(lunId int64) {
+	d.availableLunIds[lunId] = true
+}
+
+func (d *Driver) removeAvailableLunId(lunId int64) {
+	delete(d.availableLunIds, lunId)
 }
