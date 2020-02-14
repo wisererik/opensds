@@ -288,7 +288,9 @@ func (d *Driver) DeleteVolume(opt *pb.DeleteVolumeOpts) error {
 	log.Info("Remove volume success, volume id =", opt.GetId())
 	if d.limitLunIdRange {
 		id, _ := strconv.ParseInt(lunId, 10, 64)
-		d.removeAvailableLunId(id)
+		if id >= d.conf.LunIdRangeMin && id <= d.conf.LunIdRangeMax {
+			d.addAvailableLunId(id)
+		}
 	}
 
 	return nil
