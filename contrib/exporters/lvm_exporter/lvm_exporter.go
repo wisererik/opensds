@@ -141,7 +141,7 @@ func (c *lvmCollector) Collect(ch chan<- prometheus.Metric) {
 	defer c.mu.Unlock()
 
 	metricDriver := lvm.MetricDriver{}
-	metricDriver.Setup()
+	metricDriver.Setup("")
 
 	metricArray, _ := metricDriver.CollectMetrics()
 	for _, metric := range metricArray {

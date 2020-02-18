@@ -527,6 +527,7 @@ func (p *PairOperator) Create(ctx *c.Context, replica *ReplicationSpec, vol *Vol
 		IsPrimary:                      p.isPrimary,
 		VolumeDataList:                 replica.VolumeDataList,
 		Metadata:                       replica.Metadata,
+		ConfigPath:                     p.provisionDock.ConfigPath,
 	}
 	p.volumeController.SetDock(p.provisionDock)
 	return p.volumeController.CreateReplication(opt)
@@ -548,6 +549,7 @@ func (p *PairOperator) Delete(ctx *c.Context, replica *ReplicationSpec, vol *Vol
 		Context:                        ctx.ToJson(),
 		Metadata:                       replica.Metadata,
 		IsPrimary:                      p.isPrimary,
+		ConfigPath:                     p.provisionDock.ConfigPath,
 	}
 	p.volumeController.SetDock(p.provisionDock)
 	return p.volumeController.DeleteReplication(opt)
@@ -568,6 +570,7 @@ func (p *PairOperator) Enable(ctx *c.Context, replica *ReplicationSpec, vol *Vol
 		Context:                        ctx.ToJson(),
 		Metadata:                       replica.Metadata,
 		IsPrimary:                      p.isPrimary,
+		ConfigPath:                     p.provisionDock.ConfigPath,
 	}
 	p.volumeController.SetDock(p.provisionDock)
 	return p.volumeController.EnableReplication(opt)
@@ -588,6 +591,7 @@ func (p *PairOperator) Disable(ctx *c.Context, replica *ReplicationSpec, vol *Vo
 		Context:                        ctx.ToJson(),
 		Metadata:                       replica.Metadata,
 		IsPrimary:                      p.isPrimary,
+		ConfigPath:                     p.provisionDock.ConfigPath,
 	}
 	p.volumeController.SetDock(p.provisionDock)
 	return p.volumeController.DisableReplication(opt)
@@ -610,6 +614,7 @@ func (p *PairOperator) Failover(ctx *c.Context, replica *ReplicationSpec, failov
 		AllowAttachedVolume:            failover.AllowAttachedVolume,
 		SecondaryBackendId:             failover.SecondaryBackendId,
 		IsPrimary:                      p.isPrimary,
+		ConfigPath:                     p.provisionDock.ConfigPath,
 	}
 	p.volumeController.SetDock(p.provisionDock)
 	return p.volumeController.FailoverReplication(opt)

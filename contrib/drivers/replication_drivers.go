@@ -38,7 +38,7 @@ import (
 // replication drivers, currently supporting DRBD.
 type ReplicationDriver interface {
 	// Any initialization the replication driver does while starting.
-	Setup() error
+	Setup(configPath string) error
 	// Any operation the replication driver does while stopping.
 	Unset() error
 
@@ -63,7 +63,7 @@ func IsSupportArrayBasedReplication(resourceType string) bool {
 }
 
 // Init
-func InitReplicationDriver(resourceType string) (ReplicationDriver, error) {
+func InitReplicationDriver(resourceType string, configPath string) (ReplicationDriver, error) {
 	var d ReplicationDriver
 	switch resourceType {
 	case driversConfig.DRBDDriverType:
@@ -78,7 +78,7 @@ func InitReplicationDriver(resourceType string) (ReplicationDriver, error) {
 		d = &replication_sample.ReplicationDriver{}
 		break
 	}
-	err := d.Setup()
+	err := d.Setup(configPath)
 	return d, err
 }
 

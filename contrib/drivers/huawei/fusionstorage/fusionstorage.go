@@ -26,16 +26,15 @@ import (
 	. "github.com/opensds/opensds/contrib/drivers/utils/config"
 	. "github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
-	"github.com/opensds/opensds/pkg/utils/config"
 	uuid "github.com/satori/go.uuid"
 )
 
-func (d *Driver) Setup() error {
+func (d *Driver) Setup(configPath string) error {
 	conf := &Config{}
 
 	d.Conf = conf
 
-	path := config.CONF.OsdsDock.Backends.HuaweiFusionStorage.ConfigPath
+	path := configPath
 	if path == "" {
 		path = DefaultConfPath
 	}

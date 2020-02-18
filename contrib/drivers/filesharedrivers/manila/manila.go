@@ -35,7 +35,6 @@ import (
 	driverConfig "github.com/opensds/opensds/contrib/drivers/utils/config"
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
-	"github.com/opensds/opensds/pkg/utils/config"
 	"github.com/opensds/opensds/pkg/utils/pwd"
 	uuid "github.com/satori/go.uuid"
 )
@@ -76,10 +75,10 @@ type Config struct {
 }
 
 // Setup implementation
-func (d *Driver) Setup() error {
+func (d *Driver) Setup(configPath string) error {
 	// Read manila config file
 	d.conf = &Config{}
-	p := config.CONF.OsdsDock.Backends.Manila.ConfigPath
+	p := configPath
 	if "" == p {
 		p = defaultConfPath
 	}

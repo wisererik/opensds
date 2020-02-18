@@ -24,7 +24,6 @@ import (
 	. "github.com/opensds/opensds/contrib/drivers/utils/config"
 	. "github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
-	"github.com/opensds/opensds/pkg/utils/config"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -86,9 +85,9 @@ type Driver struct {
 	conf *Config
 }
 
-func (d *Driver) Setup() error {
+func (d *Driver) Setup(configPath string) error {
 	conf := &Config{}
-	path := config.CONF.OsdsDock.Backends.Chubaofs.ConfigPath
+	path := configPath
 	if "" == path {
 		path = DefaultConfPath
 	}

@@ -31,7 +31,6 @@ import (
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
 	"github.com/opensds/opensds/pkg/utils"
-	"github.com/opensds/opensds/pkg/utils/config"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -66,10 +65,10 @@ type Driver struct {
 	cli  *Cli
 }
 
-func (d *Driver) Setup() error {
+func (d *Driver) Setup(configPath string) error {
 	// Read lvm config file
 	d.conf = &LVMConfig{TgtBindIp: defaultTgtBindIp, TgtConfDir: defaultTgtConfDir}
-	p := config.CONF.OsdsDock.Backends.LVM.ConfigPath
+	p := configPath
 	if "" == p {
 		p = defaultConfPath
 	}

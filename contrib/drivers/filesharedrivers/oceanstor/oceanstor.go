@@ -27,18 +27,17 @@ import (
 	model "github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
 	"github.com/opensds/opensds/pkg/utils"
-	"github.com/opensds/opensds/pkg/utils/config"
 	uuid "github.com/satori/go.uuid"
 )
 
-func (d *Driver) Setup() error {
+func (d *Driver) Setup(configPath string) error {
 	if d.Client != nil {
 		return nil
 	}
 
 	var err error
 
-	d.InitConf()
+	d.InitConf(configPath)
 	cli, err := newRestCommon(d.Config)
 	if err != nil {
 		msg := fmt.Sprintf("get new client failed: %v", err)
@@ -52,8 +51,8 @@ func (d *Driver) Setup() error {
 	return nil
 }
 
-func (d *Driver) InitConf() {
-	path := config.CONF.OsdsDock.Backends.HuaweiOceanStorFile.ConfigPath
+func (d *Driver) InitConf(ConfigPath string) {
+	path := ConfigPath
 	if path == "" {
 		path = DefaultConfPath
 	}

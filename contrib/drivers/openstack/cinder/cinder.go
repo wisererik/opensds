@@ -37,7 +37,6 @@ import (
 	. "github.com/opensds/opensds/contrib/drivers/utils/config"
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
-	"github.com/opensds/opensds/pkg/utils/config"
 	"github.com/opensds/opensds/pkg/utils/pwd"
 	uuid "github.com/satori/go.uuid"
 )
@@ -110,10 +109,10 @@ func (opts ListPoolOpts) ToStoragePoolsListQuery() (string, error) {
 }
 
 // Setup
-func (d *Driver) Setup() error {
+func (d *Driver) Setup(configPath string) error {
 	// Read cinder config file
 	d.conf = &CinderConfig{}
-	p := config.CONF.OsdsDock.Backends.Cinder.ConfigPath
+	p := configPath
 	if "" == p {
 		p = defaultConfPath
 	}

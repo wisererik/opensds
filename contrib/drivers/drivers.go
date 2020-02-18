@@ -42,7 +42,7 @@ import (
 // drivers, currently support sample, lvm, ceph, cinder and so forth.
 type VolumeDriver interface {
 	//Any initialization the volume driver does while starting.
-	Setup() error
+	Setup(configPath string) error
 	//Any operation the volume driver does while stopping.
 	Unset() error
 
@@ -90,7 +90,7 @@ var (
 )
 
 // Init
-func Init(resourceType string) (VolumeDriver, error) {
+func Init(resourceType, configPath string) (VolumeDriver, error) {
 	var d VolumeDriver
 
 	switch resourceType {
@@ -125,7 +125,7 @@ func Init(resourceType string) (VolumeDriver, error) {
 		break
 	}
 
-	err := d.Setup()
+	err := d.Setup(configPath)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +179,7 @@ func CleanMetricDriver(d MetricDriver) MetricDriver {
 
 type MetricDriver interface {
 	//Any initialization the metric driver does while starting.
-	Setup() error
+	Setup(configPath string) error
 	//Any operation the metric driver does while stopping.
 	Teardown() error
 	// Collect metrics for all supported resources
@@ -187,7 +187,7 @@ type MetricDriver interface {
 }
 
 // Init
-func InitMetricDriver(resourceType string) MetricDriver {
+func InitMetricDriver(resourceType string, configPath string) MetricDriver {
 	var d MetricDriver
 	switch resourceType {
 	case config.LVMDriverType:
@@ -203,6 +203,6 @@ func InitMetricDriver(resourceType string) MetricDriver {
 		//d = &sample.Driver{}
 		break
 	}
-	d.Setup()
+	d.Setup(configPath)
 	return d
 }

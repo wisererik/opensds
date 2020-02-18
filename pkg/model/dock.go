@@ -63,4 +63,7 @@ type DockSpec struct {
 	// attachment and backend attached storage resouce description are clear.
 	// +optional
 	Metadata map[string]string `json:"metadata,omitempty"`
+
+	// The path of the dock's config file
+	ConfigPath string `json:"configPath,omitempty"`
 }

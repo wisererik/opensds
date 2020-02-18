@@ -26,7 +26,7 @@ import (
 type ReplicationDriver struct{}
 
 // Setup
-func (r *ReplicationDriver) Setup() error { return nil }
+func (r *ReplicationDriver) Setup(configPath string) error { return nil }
 
 // Unset
 func (r *ReplicationDriver) Unset() error { return nil }
