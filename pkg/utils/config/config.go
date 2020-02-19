@@ -34,7 +34,7 @@ const (
 	ConfDefaultValue
 )
 
-var allSections []string
+var notParsedSections []string
 
 func setSlice(v reflect.Value, str string) error {
 	sList := strings.Split(str, ",")
@@ -156,9 +156,6 @@ func setSlice(v reflect.Value, str string) error {
 }
 
 func parseItems(section string, v reflect.Value, cfg *ini.File) error {
-	if v.Kind() == reflect.Slice {
-		return nil
-	}
 	for i := 0; i < v.Type().NumField(); i++ {
 		field := v.Field(i)
 		tag := v.Type().Field(i).Tag.Get("conf")
@@ -244,13 +241,13 @@ func parseSections(cfg *ini.File, t reflect.Type, v reflect.Value) error {
 		if err := parseItems(section, field, cfg); err != nil {
 			return err
 		}
-		if len(allSections) != 0 {
-			for i := 0; i < len(allSections); i++ {
-				if strings.EqualFold(section, allSections[i]) {
-					if i == len(allSections)-1 {
-						allSections = allSections[:i]
+		if len(notParsedSections) != 0 {
+			for i := 0; i < len(notParsedSections); i++ {
+				if strings.EqualFold(section, notParsedSections[i]) {
+					if i == len(notParsedSections)-1 {
+						notParsedSections = notParsedSections[:i]
 					} else {
-						allSections = append(allSections[:i], allSections[i+1:]...)
+						notParsedSections = append(notParsedSections[:i], notParsedSections[i+1:]...)
 					}
 				}
 			}
@@ -292,9 +289,9 @@ func initConf(confFile string, conf interface{}) {
 	}
 	t := reflect.TypeOf(conf)
 	v := reflect.ValueOf(conf)
-	allSections = make([]string, 0)
+	notParsedSections = make([]string, 0)
 	if cfg != nil {
-		allSections = cfg.SectionStrings()
+		notParsedSections = cfg.SectionStrings()
 	}
 	if err := parseSections(cfg, t, v); err != nil {
 		log.Fatalf("[ERROR] parse configure file failed: %v", err)
@@ -303,8 +300,10 @@ func initConf(confFile string, conf interface{}) {
 		v = v.Elem()
 		t = t.Elem()
 	}
-	if len(allSections) != 0 && v.FieldByName("Backends").IsValid() {
-		parseBackends(cfg, allSections, v.FieldByName("Backends"))
+	// After all the sections which the section name is known have been parsed,
+	// the rest sections should be sections for drivers
+	if len(notParsedSections) != 0 && v.FieldByName("Backends").IsValid() {
+		parseBackends(cfg, notParsedSections, v.FieldByName("Backends"))
 	}
 }
 
