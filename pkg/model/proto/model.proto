@@ -512,6 +512,8 @@ message CreateReplicationOpts {
     int64 ReplicationBandwidth = 21;
     // The Serialized profile
     string profile = 22;
+    // The driver config file path
+    string configPath = 23;
 }
 
 // Delete ReplicationOpts is a structure which indicates all required properties
@@ -553,6 +555,8 @@ message DeleteReplicationOpts {
     bool  isPrimary = 17;
     // The Serialized profile
     string profile = 18;
+    // The driver config file path
+    string configPath = 19;
 }
 
 
