@@ -19,11 +19,9 @@ import (
 	"reflect"
 	"testing"
 
-	//"github.com/opensds/opensds/contrib/drivers/filesharedrivers/nfs"
 	. "github.com/opensds/opensds/contrib/drivers/utils/config"
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
-	"github.com/opensds/opensds/pkg/utils/config"
 	"github.com/opensds/opensds/pkg/utils/exec"
 )
 
@@ -35,8 +33,8 @@ var fp = map[string]PoolProperties{
 		Extras: model.StoragePoolExtraSpec{
 			DataStorage: model.DataStorageLoS{
 				ProvisioningPolicy:      "Thin",
-				Compression:        false,
-				Deduplication:      false,
+				Compression:             false,
+				Deduplication:           false,
 				StorageAccessCapability: []string{"Read", "Write", "Execute"},
 			},
 			IOConnectivity: model.IOConnectivityLoS{
@@ -57,7 +55,6 @@ var fp = map[string]PoolProperties{
 
 func TestSetup(t *testing.T) {
 	var d = &Driver{}
-	config.CONF.OsdsDock.Backends.NFS.ConfigPath = "testdata/nfs.yaml"
 	var expectedDriver = &Driver{
 		conf: &NFSConfig{
 			Pool:           fp,
@@ -67,7 +64,7 @@ func TestSetup(t *testing.T) {
 		},
 	}
 
-	if err := d.Setup(); err != nil {
+	if err := d.Setup("testdata/nfs.yaml"); err != nil {
 		t.Errorf("Setup nfs driver failed: %+v\n", err)
 	}
 	if !reflect.DeepEqual(d.conf, expectedDriver.conf) {
@@ -102,8 +99,7 @@ func (f *FakeExecuter) Run(name string, args ...string) (string, error) {
 
 func TestCreateFileShare(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.NFS.ConfigPath = "testdata/nfs.yaml"
-	fd.Setup()
+	fd.Setup("testdata/nfs.yaml")
 
 	respMap := map[string]*FakeResp{
 		"mkdir":     {"", nil},
@@ -148,8 +144,7 @@ func TestCreateFileShare(t *testing.T) {
 
 func TestListPools(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.NFS.ConfigPath = "testdata/nfs.yaml"
-	fd.Setup()
+	fd.Setup("testdata/nfs.yaml")
 
 	var vgsResp = `opensds-files-default   20.00 20.00 WSpJ3r-JYVF-DYNq-1rCe-5I6j-Zb3d-8Ub0Hg
   opensds-volumes-default 20.00 20.00 t7mLWW-AeCf-LtuF-7K8p-R4xA-QC5x-61qx3H`
@@ -171,8 +166,8 @@ func TestListPools(t *testing.T) {
 			Extras: model.StoragePoolExtraSpec{
 				DataStorage: model.DataStorageLoS{
 					ProvisioningPolicy:      "Thin",
-					Compression:        false,
-					Deduplication:      false,
+					Compression:             false,
+					Deduplication:           false,
 					StorageAccessCapability: []string{"Read", "Write", "Execute"},
 				},
 				IOConnectivity: model.IOConnectivityLoS{

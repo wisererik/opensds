@@ -22,7 +22,6 @@ import (
 	. "github.com/opensds/opensds/contrib/drivers/utils/config"
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
-	"github.com/opensds/opensds/pkg/utils/config"
 	"github.com/opensds/opensds/pkg/utils/exec"
 )
 
@@ -34,8 +33,8 @@ var fp = map[string]PoolProperties{
 		Extras: model.StoragePoolExtraSpec{
 			DataStorage: model.DataStorageLoS{
 				ProvisioningPolicy: "Thin",
-				Compression:   false,
-				Deduplication: false,
+				Compression:        false,
+				Deduplication:      false,
 			},
 			IOConnectivity: model.IOConnectivityLoS{
 				AccessProtocol: "iscsi",
@@ -55,7 +54,6 @@ var fp = map[string]PoolProperties{
 
 func TestSetup(t *testing.T) {
 	var d = &Driver{}
-	config.CONF.OsdsDock.Backends.LVM.ConfigPath = "testdata/lvm.yaml"
 	var expectedDriver = &Driver{
 		conf: &LVMConfig{
 			Pool:           fp,
@@ -65,7 +63,7 @@ func TestSetup(t *testing.T) {
 		},
 	}
 
-	if err := d.Setup(); err != nil {
+	if err := d.Setup("testdata/lvm.yaml"); err != nil {
 		t.Errorf("Setup lvm driver failed: %+v\n", err)
 	}
 	if !reflect.DeepEqual(d.conf, expectedDriver.conf) {
@@ -100,8 +98,7 @@ func (f *FakeExecuter) Run(name string, args ...string) (string, error) {
 
 func TestCreateVolume(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.LVM.ConfigPath = "testdata/lvm.yaml"
-	fd.Setup()
+	fd.Setup("testdata/lvm.yaml")
 
 	respMap := map[string]*FakeResp{
 		"lvcreate": {"", nil},
@@ -138,8 +135,7 @@ func TestCreateVolume(t *testing.T) {
 
 func TestCreateVolumeFromSnapshot(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.LVM.ConfigPath = "testdata/lvm.yaml"
-	fd.Setup()
+	fd.Setup("testdata/lvm.yaml")
 
 	respMap := map[string]*FakeResp{
 		"lvcreate": {"", nil},
@@ -179,8 +175,7 @@ func TestCreateVolumeFromSnapshot(t *testing.T) {
 
 func TestDeleteVolume(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.LVM.ConfigPath = "testdata/lvm.yaml"
-	fd.Setup()
+	fd.Setup("testdata/lvm.yaml")
 
 	respMap := map[string]*FakeResp{
 		"lvdisplay": {"-wi-a-----", nil},
@@ -201,8 +196,7 @@ func TestDeleteVolume(t *testing.T) {
 
 func TestExtendVolume(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.LVM.ConfigPath = "testdata/lvm.yaml"
-	fd.Setup()
+	fd.Setup("testdata/lvm.yaml")
 
 	respMap := map[string]*FakeResp{
 		"lvdisplay": {"-wi-a-----", nil},
@@ -232,8 +226,7 @@ func TestExtendVolume(t *testing.T) {
 
 func TestCreateSnapshot(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.LVM.ConfigPath = "testdata/lvm.yaml"
-	fd.Setup()
+	fd.Setup("testdata/lvm.yaml")
 
 	respMap := map[string]*FakeResp{
 		"lvcreate": {"-wi-a-----", nil},
@@ -274,8 +267,7 @@ func TestCreateSnapshot(t *testing.T) {
 
 func TestDeleteSnapshot(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.LVM.ConfigPath = "testdata/lvm.yaml"
-	fd.Setup()
+	fd.Setup("testdata/lvm.yaml")
 
 	lvsResp := `  _snapshot-f0594d2b-ffdf-4947-8380-089f0bc17389
   volume-0e2f4a9e-4a94-4d27-b1b4-83464811605c
@@ -304,8 +296,7 @@ func TestDeleteSnapshot(t *testing.T) {
 
 func TestListPools(t *testing.T) {
 	var fd = &Driver{}
-	config.CONF.OsdsDock.Backends.LVM.ConfigPath = "testdata/lvm.yaml"
-	fd.Setup()
+	fd.Setup("testdata/lvm.yaml")
 
 	var vgsResp = `  vg001  18.00 18.00 ahF6kS-QNOH-X63K-avat-6Kag-XLTo-c9ghQ6
   ubuntu-vg               127.52  0.03 fQbqtg-3vDQ-vk3U-gfsT-50kJ-30pq-OZVSJH
@@ -328,8 +319,8 @@ func TestListPools(t *testing.T) {
 			Extras: model.StoragePoolExtraSpec{
 				DataStorage: model.DataStorageLoS{
 					ProvisioningPolicy: "Thin",
-					Compression:   false,
-					Deduplication: false,
+					Compression:        false,
+					Deduplication:      false,
 				},
 				IOConnectivity: model.IOConnectivityLoS{
 					AccessProtocol: "iscsi",

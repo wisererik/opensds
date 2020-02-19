@@ -22,8 +22,6 @@ plugin, just modify Init() and Clean() method.
 package drivers
 
 import (
-	"reflect"
-
 	"github.com/opensds/opensds/contrib/drivers/drbd"
 	"github.com/opensds/opensds/contrib/drivers/huawei/oceanstor"
 	scms "github.com/opensds/opensds/contrib/drivers/scutech/cms"
@@ -50,12 +48,8 @@ type ReplicationDriver interface {
 }
 
 func IsSupportArrayBasedReplication(resourceType string) bool {
-	v := reflect.ValueOf(config.CONF.Backends)
-	t := reflect.TypeOf(config.CONF.Backends)
-	for i := 0; i < t.NumField(); i++ {
-		field := v.Field(i)
-		tag := t.Field(i).Tag.Get("conf")
-		if resourceType == tag && field.Interface().(config.BackendProperties).SupportReplication {
+	for i := 0; i < len(config.CONF.Backends); i++ {
+		if resourceType == config.CONF.Backends[i].DriverName && config.CONF.Backends[i].SupportReplication {
 			return true
 		}
 	}

@@ -257,7 +257,7 @@ func parseSections(cfg *ini.File, t reflect.Type, v reflect.Value) error {
 }
 
 func parseBackends(cfg *ini.File, sections []string, v reflect.Value) {
-	var backends Backends
+	var backends []BackendProperties
 	for i := 0; i < len(sections); i++ {
 		var backend BackendProperties
 		key, err := cfg.Section(sections[i]).GetKey("name")
@@ -276,7 +276,7 @@ func parseBackends(cfg *ini.File, sections []string, v reflect.Value) {
 		if err == nil {
 			backend.ConfigPath = key.Value()
 		}
-		backends.backends = append(backends.backends, backend)
+		backends = append(backends, backend)
 	}
 	backendsReflect := reflect.ValueOf(backends)
 	v.Set(backendsReflect)
@@ -300,7 +300,7 @@ func initConf(confFile string, conf interface{}) {
 		v = v.Elem()
 		t = t.Elem()
 	}
-	if len(allSections) != 0 {
+	if len(allSections) != 0 && v.FieldByName("Backends").IsValid() {
 		parseBackends(cfg, allSections, v.FieldByName("Backends"))
 	}
 }
@@ -337,8 +337,8 @@ func (c *Config) Load() {
 func GetBackendsMap() map[string]BackendProperties {
 	backendsMap := map[string]BackendProperties{}
 
-	for i := 0; i < len(CONF.backends); i++ {
-		backendsMap[CONF.backends[i].Name] = CONF.backends[i]
+	for i := 0; i < len(CONF.Backends); i++ {
+		backendsMap[CONF.Backends[i].Name] = CONF.Backends[i]
 	}
 	return backendsMap
 }

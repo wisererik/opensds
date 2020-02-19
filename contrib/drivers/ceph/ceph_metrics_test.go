@@ -154,7 +154,7 @@ func NewMetricFakeExecuter(respMap map[string]*MetricFakeRep) exec.Executer {
 
 func TestCollectMetrics(t *testing.T) {
 	var md = &MetricDriver{}
-	md.Setup()
+	md.Setup("")
 	md.cli = &MetricCli{nil, nil}
 	md.cli.conn = NewMetricFakeconn(fakeResp)
 	md.cli.RootExecuter = NewMetricFakeExecuter(respMap)
