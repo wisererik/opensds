@@ -164,6 +164,9 @@ func parseItems(section string, v reflect.Value, cfg *ini.File) error {
 		tag := v.Type().Field(i).Tag.Get("conf")
 		if "" == tag {
 			parseSections(cfg, field.Type(), field)
+		} else if tag == "backends" {
+			// Handle backend separately
+			continue
 		}
 		tags := strings.SplitN(tag, ",", 2)
 		if !field.CanSet() {

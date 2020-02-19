@@ -188,7 +188,7 @@ func (pdd *provisionDockDiscoverer) Discover() error {
 
 			replicationDriverName := dck.Metadata["HostReplicationDriver"]
 			replicationType := model.ReplicationTypeHost
-			if drivers.IsSupportArrayBasedReplication(dck.DriverName) {
+			if drivers.IsSupportArrayBasedReplication(dck.Name) {
 				replicationType = model.ReplicationTypeArray
 				replicationDriverName = dck.DriverName
 			}

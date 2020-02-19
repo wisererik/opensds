@@ -47,9 +47,9 @@ type ReplicationDriver interface {
 	FailoverReplication(opt *pb.FailoverReplicationOpts) error
 }
 
-func IsSupportArrayBasedReplication(resourceType string) bool {
+func IsSupportArrayBasedReplication(resourceName string) bool {
 	for i := 0; i < len(config.CONF.Backends); i++ {
-		if resourceType == config.CONF.Backends[i].DriverName && config.CONF.Backends[i].SupportReplication {
+		if resourceName == config.CONF.Backends[i].Name && config.CONF.Backends[i].SupportReplication {
 			return true
 		}
 	}
