@@ -239,6 +239,8 @@ message CreateVolumeOpts {
     string profile = 17;
     // The driver config file path
     string configPath = 18;
+    // The dock name
+    string dockName = 19;
 }
 
 // DeleteVolumeOpts is a structure which indicates all required properties
@@ -262,6 +264,8 @@ message DeleteVolumeOpts {
     string profile = 7;
     // The driver config file path
     string configPath = 8;
+    // The dock name
+    string dockName = 9;
 }
 
 // ExtendVolumeOpts is a structure which indicates all required properties
@@ -296,6 +300,8 @@ message ExtendVolumeOpts {
     string profile = 13;
     // The driver config file path
     string configPath = 14;
+    // The dock name
+    string dockName = 15;
 }
 
 // CreateVolumeSnapshotOpts is a structure which indicates all required
@@ -324,6 +330,8 @@ message CreateVolumeSnapshotOpts {
     string profile = 10;
     // The driver config file path
     string configPath = 11;
+    // The dock name
+    string dockName = 12;
 }
 
 // DeleteVolumeSnapshotOpts is a structure which indicates all required
@@ -343,6 +351,8 @@ message DeleteVolumeSnapshotOpts {
     string profile = 6;
     // The driver config file path
     string configPath = 7;
+    // The dock name
+    string dockName = 8;
 }
 
 // CreateVolumeAttachmentOpts is a structure which indicates all required
@@ -370,6 +380,8 @@ message CreateVolumeAttachmentOpts {
     string AccessProtocol = 10;
     // The driver config file path
     string configPath = 11;
+    // The dock name
+    string dockName = 12;
 }
 
 // DeleteVolumeAttachmentOpts is a structure which indicates all required
@@ -393,6 +405,8 @@ message DeleteVolumeAttachmentOpts {
     string AccessProtocol = 8;
     // The driver config file path
     string configPath = 9;
+    // The dock name
+    string dockName = 10;
 }
 
 // CreateSnapshotAttachmentOpts is a structure which indicates all required
@@ -714,6 +728,8 @@ message CreateVolumeGroupOpts {
     string context = 9;
     // The driver config file path
     string configPath = 10;
+    // The dock name
+    string dockName = 11;
 }
 
 message UpdateVolumeGroupOpts{
@@ -731,6 +747,8 @@ message UpdateVolumeGroupOpts{
     string context = 6;
     // The driver config file path
     string configPath = 7;
+    // The dock name
+    string dockName = 8;
 }
 
 message DeleteVolumeGroupOpts{
@@ -744,6 +762,8 @@ message DeleteVolumeGroupOpts{
     string context = 4;
     // The driver config file path
     string configPath = 5;
+    // The dock name
+    string dockName = 6;
 }
 service AttachDock {
     // Attach a volume

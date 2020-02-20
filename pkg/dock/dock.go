@@ -119,7 +119,7 @@ func (ds *dockServer) Run() error {
 // CreateVolume implements pb.DockServer.CreateVolume
 func (ds *dockServer) CreateVolume(ctx context.Context, opt *pb.CreateVolumeOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -141,7 +141,7 @@ func (ds *dockServer) CreateVolume(ctx context.Context, opt *pb.CreateVolumeOpts
 // DeleteVolume implements pb.DockServer.DeleteVolume
 func (ds *dockServer) DeleteVolume(ctx context.Context, opt *pb.DeleteVolumeOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -162,7 +162,7 @@ func (ds *dockServer) DeleteVolume(ctx context.Context, opt *pb.DeleteVolumeOpts
 // ExtendVolume implements pb.DockServer.ExtendVolume
 func (ds *dockServer) ExtendVolume(ctx context.Context, opt *pb.ExtendVolumeOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -184,7 +184,7 @@ func (ds *dockServer) ExtendVolume(ctx context.Context, opt *pb.ExtendVolumeOpts
 // CreateVolumeAttachment implements pb.DockServer.CreateVolumeAttachment
 func (ds *dockServer) CreateVolumeAttachment(ctx context.Context, opt *pb.CreateVolumeAttachmentOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -213,7 +213,7 @@ func (ds *dockServer) CreateVolumeAttachment(ctx context.Context, opt *pb.Create
 // DeleteVolumeAttachment implements pb.DockServer.DeleteVolumeAttachment
 func (ds *dockServer) DeleteVolumeAttachment(ctx context.Context, opt *pb.DeleteVolumeAttachmentOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -234,7 +234,7 @@ func (ds *dockServer) DeleteVolumeAttachment(ctx context.Context, opt *pb.Delete
 // CreateVolumeSnapshot implements pb.DockServer.CreateVolumeSnapshot
 func (ds *dockServer) CreateVolumeSnapshot(ctx context.Context, opt *pb.CreateVolumeSnapshotOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -256,7 +256,7 @@ func (ds *dockServer) CreateVolumeSnapshot(ctx context.Context, opt *pb.CreateVo
 // DeleteVolumeSnapshot implements pb.DockServer.DeleteVolumeSnapshot
 func (ds *dockServer) DeleteVolumeSnapshot(ctx context.Context, opt *pb.DeleteVolumeSnapshotOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -404,7 +404,7 @@ func (ds *dockServer) FailoverReplication(ctx context.Context, opt *pb.FailoverR
 // CreateVolumeGroup implements pb.DockServer.CreateVolumeGroup
 func (ds *dockServer) CreateVolumeGroup(ctx context.Context, opt *pb.CreateVolumeGroupOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -434,7 +434,7 @@ func (ds *dockServer) CreateVolumeGroup(ctx context.Context, opt *pb.CreateVolum
 
 func (ds *dockServer) UpdateVolumeGroup(ctx context.Context, opt *pb.UpdateVolumeGroupOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -464,7 +464,7 @@ func (ds *dockServer) UpdateVolumeGroup(ctx context.Context, opt *pb.UpdateVolum
 
 func (ds *dockServer) DeleteVolumeGroup(ctx context.Context, opt *pb.DeleteVolumeGroupOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err

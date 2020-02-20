@@ -136,6 +136,7 @@ func (c *Controller) CreateVolume(contx context.Context, opt *pb.CreateVolumeOpt
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 	opt.ConfigPath = dockInfo.ConfigPath
+	opt.DockName = dockInfo.Name
 
 	log.V(5).Infof("selected driver name for create volume %+v", opt.DriverName)
 
@@ -188,6 +189,7 @@ func (c *Controller) DeleteVolume(contx context.Context, opt *pb.DeleteVolumeOpt
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 	opt.ConfigPath = dockInfo.ConfigPath
+	opt.DockName = dockInfo.Name
 
 	var errChan = make(chan error, 1)
 	defer close(errChan)
@@ -248,6 +250,7 @@ func (c *Controller) ExtendVolume(contx context.Context, opt *pb.ExtendVolumeOpt
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 	opt.ConfigPath = dockInfo.ConfigPath
+	opt.DockName = dockInfo.Name
 
 	if _, err := c.volumeController.ExtendVolume(opt); err != nil {
 		log.Error("extend volume failed: ", err.Error())
@@ -291,6 +294,7 @@ func (c *Controller) CreateVolumeAttachment(contx context.Context, opt *pb.Creat
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 	opt.ConfigPath = dockInfo.ConfigPath
+	opt.DockName = dockInfo.Name
 
 	result, err := c.volumeController.CreateVolumeAttachment(opt)
 	if err != nil {
@@ -339,6 +343,7 @@ func (c *Controller) DeleteVolumeAttachment(contx context.Context, opt *pb.Delet
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 	opt.ConfigPath = dockInfo.ConfigPath
+	opt.DockName = dockInfo.Name
 
 	if err = c.volumeController.DeleteVolumeAttachment(opt); err != nil {
 		msg := fmt.Sprintf("delete volume attachment failed: %v", err)
@@ -411,6 +416,7 @@ func (c *Controller) CreateVolumeSnapshot(contx context.Context, opt *pb.CreateV
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 	opt.ConfigPath = dockInfo.ConfigPath
+	opt.DockName = dockInfo.Name
 
 	result, err := c.volumeController.CreateVolumeSnapshot(opt)
 	if err != nil {
@@ -450,6 +456,7 @@ func (c *Controller) DeleteVolumeSnapshot(contx context.Context, opt *pb.DeleteV
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 	opt.ConfigPath = dockInfo.ConfigPath
+	opt.DockName = dockInfo.Name
 
 	if err = c.volumeController.DeleteVolumeSnapshot(opt); err != nil {
 		log.Error("error occurred in controller module when delete volume snapshot: ", err)
@@ -693,6 +700,7 @@ func (c *Controller) CreateVolumeGroup(contx context.Context, opt *pb.CreateVolu
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
 	opt.ConfigPath = dockInfo.ConfigPath
+	opt.DockName = dockInfo.Name
 
 	result, err := c.volumeController.CreateVolumeGroup(opt)
 	if err != nil {
@@ -744,6 +752,7 @@ func (c *Controller) UpdateVolumeGroup(contx context.Context, opt *pb.UpdateVolu
 	c.volumeController.SetDock(dock)
 	opt.DriverName = dock.DriverName
 	opt.ConfigPath = dock.ConfigPath
+	opt.DockName = dock.Name
 
 	vg, err := c.volumeController.UpdateVolumeGroup(opt)
 	if err != nil {
@@ -823,6 +832,7 @@ func (c *Controller) DeleteVolumeGroup(contx context.Context, opt *pb.DeleteVolu
 	c.volumeController.SetDock(dock)
 	opt.DriverName = dock.DriverName
 	opt.ConfigPath = dock.ConfigPath
+	opt.DockName = dock.Name
 
 	if err = c.volumeController.DeleteVolumeGroup(opt); err != nil {
 		log.Error("when delete volume group: ", err)

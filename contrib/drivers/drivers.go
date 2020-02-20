@@ -86,11 +86,11 @@ type VolumeDriver interface {
 }
 
 var (
-	OceanStorDriver = oceanstor.Driver{}
+	OceanStorDrivers = make(map[string]oceanstor.Driver)
 )
 
 // Init
-func Init(resourceType, configPath string) (VolumeDriver, error) {
+func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 	var d VolumeDriver
 
 	switch resourceType {
@@ -107,7 +107,15 @@ func Init(resourceType, configPath string) (VolumeDriver, error) {
 		d = &spectrumscale.Driver{}
 		break
 	case config.HuaweiOceanStorBlockDriverType:
-		d = &OceanStorDriver
+		_, exist := OceanStorDrivers[dockName]
+		if exist {
+			oceanstorDriver := OceanStorDrivers[dockName]
+			d = &oceanstorDriver
+		} else {
+			oceanstorDriver := oceanstor.Driver{}
+			OceanStorDrivers[dockName] = oceanstorDriver
+			d = &oceanstorDriver
+		}
 		break
 	case config.HuaweiFusionStorageDriverType:
 		d = &fusionstorage.Driver{}

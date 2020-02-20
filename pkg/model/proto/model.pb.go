@@ -64,7 +64,9 @@ type CreateVolumeOpts struct {
 	// The Serialized profile
 	Profile string `protobuf:"bytes,17,opt,name=profile,proto3" json:"profile,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,18,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,18,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,19,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -221,6 +223,13 @@ func (m *CreateVolumeOpts) GetConfigPath() string {
 	return ""
 }
 
+func (m *CreateVolumeOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // DeleteVolumeOpts is a structure which indicates all required properties
 // for deleting a volume.
 type DeleteVolumeOpts struct {
@@ -241,7 +250,9 @@ type DeleteVolumeOpts struct {
 	// The Serialized profile
 	Profile string `protobuf:"bytes,7,opt,name=profile,proto3" json:"profile,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,8,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,8,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,9,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -328,6 +339,13 @@ func (m *DeleteVolumeOpts) GetConfigPath() string {
 	return ""
 }
 
+func (m *DeleteVolumeOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // ExtendVolumeOpts is a structure which indicates all required properties
 // for Extending a volume.
 type ExtendVolumeOpts struct {
@@ -359,7 +377,9 @@ type ExtendVolumeOpts struct {
 	// The Serialized profile
 	Profile string `protobuf:"bytes,13,opt,name=profile,proto3" json:"profile,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,14,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,14,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,15,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -488,6 +508,13 @@ func (m *ExtendVolumeOpts) GetConfigPath() string {
 	return ""
 }
 
+func (m *ExtendVolumeOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // CreateVolumeSnapshotOpts is a structure which indicates all required
 // properties for creating a volume snapshot.
 type CreateVolumeSnapshotOpts struct {
@@ -513,7 +540,9 @@ type CreateVolumeSnapshotOpts struct {
 	// The Serialized profile
 	Profile string `protobuf:"bytes,10,opt,name=profile,proto3" json:"profile,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,11,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,11,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,12,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -621,6 +650,13 @@ func (m *CreateVolumeSnapshotOpts) GetConfigPath() string {
 	return ""
 }
 
+func (m *CreateVolumeSnapshotOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // DeleteVolumeSnapshotOpts is a structure which indicates all required
 // properties for deleting a volume snapshot.
 type DeleteVolumeSnapshotOpts struct {
@@ -637,7 +673,9 @@ type DeleteVolumeSnapshotOpts struct {
 	// The Serialized profile
 	Profile string `protobuf:"bytes,6,opt,name=profile,proto3" json:"profile,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,7,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,7,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,8,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -717,6 +755,13 @@ func (m *DeleteVolumeSnapshotOpts) GetConfigPath() string {
 	return ""
 }
 
+func (m *DeleteVolumeSnapshotOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // CreateVolumeAttachmentOpts is a structure which indicates all required
 // properties for creating a volume attachment.
 type CreateVolumeAttachmentOpts struct {
@@ -741,7 +786,9 @@ type CreateVolumeAttachmentOpts struct {
 	// The protocol
 	AccessProtocol string `protobuf:"bytes,10,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,11,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,11,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,12,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -849,6 +896,13 @@ func (m *CreateVolumeAttachmentOpts) GetConfigPath() string {
 	return ""
 }
 
+func (m *CreateVolumeAttachmentOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // DeleteVolumeAttachmentOpts is a structure which indicates all required
 // properties for deleting a volume attachment.
 type DeleteVolumeAttachmentOpts struct {
@@ -869,7 +923,9 @@ type DeleteVolumeAttachmentOpts struct {
 	// The protocol
 	AccessProtocol string `protobuf:"bytes,8,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,9,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,9,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,10,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -959,6 +1015,13 @@ func (m *DeleteVolumeAttachmentOpts) GetAccessProtocol() string {
 func (m *DeleteVolumeAttachmentOpts) GetConfigPath() string {
 	if m != nil {
 		return m.ConfigPath
+	}
+	return ""
+}
+
+func (m *DeleteVolumeAttachmentOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
 	}
 	return ""
 }
@@ -2459,7 +2522,9 @@ type CreateVolumeGroupOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,9,opt,name=context,proto3" json:"context,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,10,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,10,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,11,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2560,6 +2625,13 @@ func (m *CreateVolumeGroupOpts) GetConfigPath() string {
 	return ""
 }
 
+func (m *CreateVolumeGroupOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 type UpdateVolumeGroupOpts struct {
 	// The uuid of the volume group, optional when updating.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -2574,7 +2646,9 @@ type UpdateVolumeGroupOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,6,opt,name=context,proto3" json:"context,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,7,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,7,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,8,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2654,6 +2728,13 @@ func (m *UpdateVolumeGroupOpts) GetConfigPath() string {
 	return ""
 }
 
+func (m *UpdateVolumeGroupOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 type DeleteVolumeGroupOpts struct {
 	// The uuid of the volume group, optional when deleting.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -2664,7 +2745,9 @@ type DeleteVolumeGroupOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,4,opt,name=context,proto3" json:"context,omitempty"`
 	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,5,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ConfigPath string `protobuf:"bytes,5,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,6,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2726,6 +2809,13 @@ func (m *DeleteVolumeGroupOpts) GetContext() string {
 func (m *DeleteVolumeGroupOpts) GetConfigPath() string {
 	if m != nil {
 		return m.ConfigPath
+	}
+	return ""
+}
+
+func (m *DeleteVolumeGroupOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
 	}
 	return ""
 }
