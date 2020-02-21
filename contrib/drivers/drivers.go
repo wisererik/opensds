@@ -18,7 +18,6 @@ driver is sample driver used for testing. If you want to use other storage
 plugin, just modify Init() and Clean() method.
 
 */
-
 package drivers
 
 import (
@@ -111,8 +110,12 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &cinderDriver
 		} else {
 			cinderDriver := cinder.Driver{}
-			CinderDrivers[dockName] = cinderDriver
 			d = &cinderDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			CinderDrivers[dockName] = cinderDriver
 		}
 		break
 	case config.CephDriverType:
@@ -122,19 +125,27 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &cephDriver
 		} else {
 			cephDriver := ceph.Driver{}
-			CephDrivers[dockName] = cephDriver
 			d = &cephDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			CephDrivers[dockName] = cephDriver
 		}
 		break
 	case config.LVMDriverType:
-		_, exist := LvmDrivers[dockName]
+		_, exist = LvmDrivers[dockName]
 		if exist {
 			lvmDriver := LvmDrivers[dockName]
 			d = &lvmDriver
 		} else {
 			lvmDriver := lvm.Driver{}
-			LvmDrivers[dockName] = lvmDriver
 			d = &lvmDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			LvmDrivers[dockName] = lvmDriver
 		}
 		break
 	case config.IBMSpectrumScaleDriverType:
@@ -144,8 +155,12 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &spectrumscaleDriver
 		} else {
 			spectrumscaleDriver := spectrumscale.Driver{}
-			SpectrumscaleDrivers[dockName] = spectrumscaleDriver
 			d = &spectrumscaleDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			SpectrumscaleDrivers[dockName] = spectrumscaleDriver
 		}
 		break
 	case config.HuaweiOceanStorBlockDriverType:
@@ -155,8 +170,12 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &oceanstorDriver
 		} else {
 			oceanstorDriver := oceanstor.Driver{}
-			OceanStorDrivers[dockName] = oceanstorDriver
 			d = &oceanstorDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			OceanStorDrivers[dockName] = oceanstorDriver
 		}
 		break
 	case config.HuaweiFusionStorageDriverType:
@@ -167,8 +186,12 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &fusionstorageDriver
 		} else {
 			fusionstorageDriver := fusionstorage.Driver{}
-			FusionstorageDrivers[dockName] = fusionstorageDriver
 			d = &fusionstorageDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			FusionstorageDrivers[dockName] = fusionstorageDriver
 		}
 		break
 	case config.HpeNimbleDriverType:
@@ -178,8 +201,12 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &nimbleDriver
 		} else {
 			nimbleDriver := nimble.Driver{}
-			NimbleDrivers[dockName] = nimbleDriver
 			d = &nimbleDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			NimbleDrivers[dockName] = nimbleDriver
 		}
 		break
 	case config.FujitsuEternusDriverType:
@@ -190,8 +217,12 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &eternusDriver
 		} else {
 			eternusDriver := eternus.Driver{}
-			EternusDrivers[dockName] = eternusDriver
 			d = &eternusDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			EternusDrivers[dockName] = eternusDriver
 		}
 		break
 	case config.NetappOntapSanDriverType:
@@ -202,8 +233,12 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &ontapSANDDriver
 		} else {
 			ontapSANDDriver := ontap.SANDriver{}
-			OntapSANDrivers[dockName] = ontapSANDDriver
 			d = &ontapSANDDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			OntapSANDrivers[dockName] = ontapSANDDriver
 		}
 		break
 	default:
@@ -214,16 +249,14 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 			d = &sampleDriver
 		} else {
 			sampleDriver := sample.Driver{}
-			SampleDrivers[dockName] = sampleDriver
 			d = &sampleDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			SampleDrivers[dockName] = sampleDriver
 		}
 		break
-	}
-	if !exist {
-		err := d.Setup(configPath)
-		if err != nil {
-			return nil, err
-		}
 	}
 	return d, nil
 }
