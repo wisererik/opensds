@@ -135,7 +135,6 @@ func (c *Controller) CreateVolume(contx context.Context, opt *pb.CreateVolumeOpt
 	}
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.DockName = dockInfo.Name
 
 	log.V(5).Infof("selected driver name for create volume %+v", opt.DriverName)
@@ -188,7 +187,6 @@ func (c *Controller) DeleteVolume(contx context.Context, opt *pb.DeleteVolumeOpt
 	c.policyController.SetDock(dockInfo)
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.DockName = dockInfo.Name
 
 	var errChan = make(chan error, 1)
@@ -249,7 +247,6 @@ func (c *Controller) ExtendVolume(contx context.Context, opt *pb.ExtendVolumeOpt
 	c.policyController.SetDock(dockInfo)
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.DockName = dockInfo.Name
 
 	if _, err := c.volumeController.ExtendVolume(opt); err != nil {
@@ -293,7 +290,6 @@ func (c *Controller) CreateVolumeAttachment(contx context.Context, opt *pb.Creat
 	}
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.DockName = dockInfo.Name
 
 	result, err := c.volumeController.CreateVolumeAttachment(opt)
@@ -342,7 +338,6 @@ func (c *Controller) DeleteVolumeAttachment(contx context.Context, opt *pb.Delet
 
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.DockName = dockInfo.Name
 
 	if err = c.volumeController.DeleteVolumeAttachment(opt); err != nil {
@@ -415,7 +410,6 @@ func (c *Controller) CreateVolumeSnapshot(contx context.Context, opt *pb.CreateV
 	}
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.DockName = dockInfo.Name
 
 	result, err := c.volumeController.CreateVolumeSnapshot(opt)
@@ -455,7 +449,6 @@ func (c *Controller) DeleteVolumeSnapshot(contx context.Context, opt *pb.DeleteV
 	}
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.DockName = dockInfo.Name
 
 	if err = c.volumeController.DeleteVolumeSnapshot(opt); err != nil {
@@ -699,7 +692,6 @@ func (c *Controller) CreateVolumeGroup(contx context.Context, opt *pb.CreateVolu
 	}
 	c.volumeController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.DockName = dockInfo.Name
 
 	result, err := c.volumeController.CreateVolumeGroup(opt)
@@ -751,7 +743,6 @@ func (c *Controller) UpdateVolumeGroup(contx context.Context, opt *pb.UpdateVolu
 	}
 	c.volumeController.SetDock(dock)
 	opt.DriverName = dock.DriverName
-	opt.ConfigPath = dock.ConfigPath
 	opt.DockName = dock.Name
 
 	vg, err := c.volumeController.UpdateVolumeGroup(opt)
@@ -831,7 +822,6 @@ func (c *Controller) DeleteVolumeGroup(contx context.Context, opt *pb.DeleteVolu
 	}
 	c.volumeController.SetDock(dock)
 	opt.DriverName = dock.DriverName
-	opt.ConfigPath = dock.ConfigPath
 	opt.DockName = dock.Name
 
 	if err = c.volumeController.DeleteVolumeGroup(opt); err != nil {
@@ -913,7 +903,6 @@ func (c *Controller) CreateFileShare(contx context.Context, opt *pb.CreateFileSh
 	}
 	c.fileshareController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 
 	log.V(5).Infof("controller create fleshare: selected Driver name %+v", opt.DriverName)
 
@@ -951,7 +940,6 @@ func (c *Controller) DeleteFileShare(contx context.Context, opt *pb.DeleteFileSh
 
 	c.fileshareController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 
 	if err = c.fileshareController.DeleteFileShare(opt); err != nil {
 		db.UpdateFileShareStatus(ctx, db.C, opt.Id, model.FileShareErrorDeleting)
@@ -985,7 +973,6 @@ func (c *Controller) CreateFileShareAcl(contx context.Context, opt *pb.CreateFil
 	}
 	c.fileshareController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.Name = fileshare.Name
 
 	result, err := c.fileshareController.CreateFileShareAcl((*pb.CreateFileShareAclOpts)(opt))
@@ -1020,7 +1007,6 @@ func (c *Controller) DeleteFileShareAcl(contx context.Context, opt *pb.DeleteFil
 	}
 	c.fileshareController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 	opt.Name = fileshare.Name
 
 	if err = c.fileshareController.DeleteFileShareAcl((*pb.DeleteFileShareAclOpts)(opt)); err != nil {
@@ -1068,7 +1054,6 @@ func (c *Controller) CreateFileShareSnapshot(contx context.Context, opt *pb.Crea
 	}
 	c.fileshareController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 
 	result, err := c.fileshareController.CreateFileShareSnapshot(opt)
 	if err != nil {
@@ -1101,7 +1086,6 @@ func (c *Controller) DeleteFileShareSnapshot(contx context.Context, opt *pb.Dele
 	}
 	c.fileshareController.SetDock(dockInfo)
 	opt.DriverName = dockInfo.DriverName
-	opt.ConfigPath = dockInfo.ConfigPath
 
 	if err = c.fileshareController.DeleteFileShareSnapshot(opt); err != nil {
 		log.Error("error occurred in controller module when delete file share snapshot: ", err)

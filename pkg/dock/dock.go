@@ -119,7 +119,7 @@ func (ds *dockServer) Run() error {
 // CreateVolume implements pb.DockServer.CreateVolume
 func (ds *dockServer) CreateVolume(ctx context.Context, opt *pb.CreateVolumeOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -141,7 +141,7 @@ func (ds *dockServer) CreateVolume(ctx context.Context, opt *pb.CreateVolumeOpts
 // DeleteVolume implements pb.DockServer.DeleteVolume
 func (ds *dockServer) DeleteVolume(ctx context.Context, opt *pb.DeleteVolumeOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -162,7 +162,7 @@ func (ds *dockServer) DeleteVolume(ctx context.Context, opt *pb.DeleteVolumeOpts
 // ExtendVolume implements pb.DockServer.ExtendVolume
 func (ds *dockServer) ExtendVolume(ctx context.Context, opt *pb.ExtendVolumeOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -184,7 +184,7 @@ func (ds *dockServer) ExtendVolume(ctx context.Context, opt *pb.ExtendVolumeOpts
 // CreateVolumeAttachment implements pb.DockServer.CreateVolumeAttachment
 func (ds *dockServer) CreateVolumeAttachment(ctx context.Context, opt *pb.CreateVolumeAttachmentOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -213,7 +213,7 @@ func (ds *dockServer) CreateVolumeAttachment(ctx context.Context, opt *pb.Create
 // DeleteVolumeAttachment implements pb.DockServer.DeleteVolumeAttachment
 func (ds *dockServer) DeleteVolumeAttachment(ctx context.Context, opt *pb.DeleteVolumeAttachmentOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -234,7 +234,7 @@ func (ds *dockServer) DeleteVolumeAttachment(ctx context.Context, opt *pb.Delete
 // CreateVolumeSnapshot implements pb.DockServer.CreateVolumeSnapshot
 func (ds *dockServer) CreateVolumeSnapshot(ctx context.Context, opt *pb.CreateVolumeSnapshotOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -256,7 +256,7 @@ func (ds *dockServer) CreateVolumeSnapshot(ctx context.Context, opt *pb.CreateVo
 // DeleteVolumeSnapshot implements pb.DockServer.DeleteVolumeSnapshot
 func (ds *dockServer) DeleteVolumeSnapshot(ctx context.Context, opt *pb.DeleteVolumeSnapshotOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -324,7 +324,7 @@ func (ds *dockServer) DetachVolume(ctx context.Context, opt *pb.DetachVolumeOpts
 // CreateReplication implements opensds.DockServer
 func (ds *dockServer) CreateReplication(ctx context.Context, opt *pb.CreateReplicationOpts) (*pb.GenericResponse, error) {
 	//Get the storage replication drivers and do some initializations.
-	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), opt.GetConfigPath())
+	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), "")
 	defer drivers.CleanReplicationDriver(driver)
 
 	log.Info("Dock server receive create replication request, vr =", opt)
@@ -343,7 +343,7 @@ func (ds *dockServer) CreateReplication(ctx context.Context, opt *pb.CreateRepli
 
 func (ds *dockServer) DeleteReplication(ctx context.Context, opt *pb.DeleteReplicationOpts) (*pb.GenericResponse, error) {
 	// Get the storage replication drivers and do some initializations.
-	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), opt.GetConfigPath())
+	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), "")
 	defer drivers.CleanReplicationDriver(driver)
 
 	log.Info("Dock server receive delete replication request, vr =", opt)
@@ -358,7 +358,7 @@ func (ds *dockServer) DeleteReplication(ctx context.Context, opt *pb.DeleteRepli
 
 func (ds *dockServer) EnableReplication(ctx context.Context, opt *pb.EnableReplicationOpts) (*pb.GenericResponse, error) {
 	// Get the storage replication drivers and do some initializations.
-	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), opt.GetConfigPath())
+	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), "")
 	defer drivers.CleanReplicationDriver(driver)
 
 	log.Info("Dock server receive enable replication request, vr =", opt)
@@ -373,7 +373,7 @@ func (ds *dockServer) EnableReplication(ctx context.Context, opt *pb.EnableRepli
 
 func (ds *dockServer) DisableReplication(ctx context.Context, opt *pb.DisableReplicationOpts) (*pb.GenericResponse, error) {
 	// Get the storage replication drivers and do some initializations.
-	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), opt.GetConfigPath())
+	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), "")
 	defer drivers.CleanReplicationDriver(driver)
 
 	log.Info("Dock server receive disable replication request, vr =", opt)
@@ -388,7 +388,7 @@ func (ds *dockServer) DisableReplication(ctx context.Context, opt *pb.DisableRep
 
 func (ds *dockServer) FailoverReplication(ctx context.Context, opt *pb.FailoverReplicationOpts) (*pb.GenericResponse, error) {
 	// Get the storage replication drivers and do some initializations.
-	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), opt.GetConfigPath())
+	driver, _ := drivers.InitReplicationDriver(opt.GetDriverName(), "")
 	defer drivers.CleanReplicationDriver(driver)
 
 	log.Info("Dock server receive failover replication request, vr =", opt)
@@ -404,7 +404,7 @@ func (ds *dockServer) FailoverReplication(ctx context.Context, opt *pb.FailoverR
 // CreateVolumeGroup implements pb.DockServer.CreateVolumeGroup
 func (ds *dockServer) CreateVolumeGroup(ctx context.Context, opt *pb.CreateVolumeGroupOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -434,7 +434,7 @@ func (ds *dockServer) CreateVolumeGroup(ctx context.Context, opt *pb.CreateVolum
 
 func (ds *dockServer) UpdateVolumeGroup(ctx context.Context, opt *pb.UpdateVolumeGroupOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -464,7 +464,7 @@ func (ds *dockServer) UpdateVolumeGroup(ctx context.Context, opt *pb.UpdateVolum
 
 func (ds *dockServer) DeleteVolumeGroup(ctx context.Context, opt *pb.DeleteVolumeGroupOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	driver, err := drivers.Init(opt.GetDriverName(), opt.GetConfigPath(), opt.GetDockName())
+	driver, err := drivers.Init(opt.GetDriverName(), "", opt.GetDockName())
 	if err != nil {
 		log.Errorf("Init driver %s failed: %v", opt.GetDriverName(), err)
 		return pb.GenericResponseError(err), err
@@ -515,7 +515,7 @@ func (ds *dockServer) deleteGroupGeneric(driver drivers.VolumeDriver, opt *pb.De
 // Collect the specified metrics from the metric driver
 func (ds *dockServer) CollectMetrics(ctx context.Context, opt *pb.CollectMetricsOpts) (*pb.GenericResponse, error) {
 	log.V(5).Info("in dock CollectMetrics methods")
-	ds.MetricDriver = drivers.InitMetricDriver(opt.GetDriverName(), opt.GetConfigPath())
+	ds.MetricDriver = drivers.InitMetricDriver(opt.GetDriverName(), "")
 
 	defer drivers.CleanMetricDriver(ds.MetricDriver)
 
@@ -533,7 +533,7 @@ func (ds *dockServer) CollectMetrics(ctx context.Context, opt *pb.CollectMetrics
 // CreateFileShareAcl implements pb.DockServer.CreateFileShare
 func (ds *dockServer) CreateFileShareAcl(ctx context.Context, opt *pb.CreateFileShareAclOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), "")
 	defer filesharedrivers.Clean(ds.FileShareDriver)
 
 	log.Info("dock server receive create file share acl request, vr =", opt)
@@ -550,7 +550,7 @@ func (ds *dockServer) CreateFileShareAcl(ctx context.Context, opt *pb.CreateFile
 // DeleteFileShareAcl implements pb.DockServer.DeleteFileShare
 func (ds *dockServer) DeleteFileShareAcl(ctx context.Context, opt *pb.DeleteFileShareAclOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), "")
 	defer filesharedrivers.Clean(ds.FileShareDriver)
 
 	log.Info("dock server receive delete file share acl request, vr =", opt)
@@ -566,7 +566,7 @@ func (ds *dockServer) DeleteFileShareAcl(ctx context.Context, opt *pb.DeleteFile
 // CreateFileShare implements pb.DockServer.CreateFileShare
 func (ds *dockServer) CreateFileShare(ctx context.Context, opt *pb.CreateFileShareOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), "")
 	defer filesharedrivers.Clean(ds.FileShareDriver)
 
 	log.Info("Dock server receive create file share request, vr =", opt)
@@ -586,7 +586,7 @@ func (ds *dockServer) CreateFileShare(ctx context.Context, opt *pb.CreateFileSha
 func (ds *dockServer) DeleteFileShare(ctx context.Context, opt *pb.DeleteFileShareOpts) (*pb.GenericResponse, error) {
 
 	// Get the storage drivers and do some initializations.
-	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), "")
 	defer filesharedrivers.Clean(ds.FileShareDriver)
 
 	log.Info("Dock server receive delete file share request, vr =", opt)
@@ -602,7 +602,7 @@ func (ds *dockServer) DeleteFileShare(ctx context.Context, opt *pb.DeleteFileSha
 // CreateFileShareSnapshot implements pb.DockServer.CreateFileShareSnapshot
 func (ds *dockServer) CreateFileShareSnapshot(ctx context.Context, opt *pb.CreateFileShareSnapshotOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), "")
 	defer filesharedrivers.Clean(ds.FileShareDriver)
 
 	log.Info("Dock server receive create file share snapshot request, vr =", opt)
@@ -618,7 +618,7 @@ func (ds *dockServer) CreateFileShareSnapshot(ctx context.Context, opt *pb.Creat
 
 func (ds *dockServer) DeleteFileShareSnapshot(ctx context.Context, opt *pb.DeleteFileShareSnapshotOpts) (*pb.GenericResponse, error) {
 	// Get the storage drivers and do some initializations.
-	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), opt.GetConfigPath())
+	ds.FileShareDriver = filesharedrivers.Init(opt.GetDriverName(), "")
 	defer filesharedrivers.Clean(ds.FileShareDriver)
 
 	log.Info("Dock server receive delete file share snapshot request, vr =", opt)

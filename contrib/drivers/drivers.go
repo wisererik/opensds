@@ -86,25 +86,67 @@ type VolumeDriver interface {
 }
 
 var (
-	OceanStorDrivers = make(map[string]oceanstor.Driver)
+	CinderDrivers        = make(map[string]cinder.Driver)
+	CephDrivers          = make(map[string]ceph.Driver)
+	LvmDrivers           = make(map[string]lvm.Driver)
+	SpectrumscaleDrivers = make(map[string]spectrumscale.Driver)
+	OceanStorDrivers     = make(map[string]oceanstor.Driver)
+	FusionstorageDrivers = make(map[string]fusionstorage.Driver)
+	NimbleDrivers        = make(map[string]nimble.Driver)
+	EternusDrivers       = make(map[string]eternus.Driver)
+	OntapSANDrivers      = make(map[string]ontap.SANDriver)
+	SampleDrivers        = make(map[string]sample.Driver)
 )
 
 // Init
 func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 	var d VolumeDriver
+	exist := false
 
 	switch resourceType {
 	case config.CinderDriverType:
-		d = &cinder.Driver{}
+		_, exist := CinderDrivers[dockName]
+		if exist {
+			cinderDriver := CinderDrivers[dockName]
+			d = &cinderDriver
+		} else {
+			cinderDriver := cinder.Driver{}
+			CinderDrivers[dockName] = cinderDriver
+			d = &cinderDriver
+		}
 		break
 	case config.CephDriverType:
-		d = &ceph.Driver{}
+		_, exist := CephDrivers[dockName]
+		if exist {
+			cephDriver := CephDrivers[dockName]
+			d = &cephDriver
+		} else {
+			cephDriver := ceph.Driver{}
+			CephDrivers[dockName] = cephDriver
+			d = &cephDriver
+		}
 		break
 	case config.LVMDriverType:
-		d = &lvm.Driver{}
+		_, exist := LvmDrivers[dockName]
+		if exist {
+			lvmDriver := LvmDrivers[dockName]
+			d = &lvmDriver
+		} else {
+			lvmDriver := lvm.Driver{}
+			LvmDrivers[dockName] = lvmDriver
+			d = &lvmDriver
+		}
 		break
 	case config.IBMSpectrumScaleDriverType:
-		d = &spectrumscale.Driver{}
+		_, exist := SpectrumscaleDrivers[dockName]
+		if exist {
+			spectrumscaleDriver := SpectrumscaleDrivers[dockName]
+			d = &spectrumscaleDriver
+		} else {
+			spectrumscaleDriver := spectrumscale.Driver{}
+			SpectrumscaleDrivers[dockName] = spectrumscaleDriver
+			d = &spectrumscaleDriver
+		}
 		break
 	case config.HuaweiOceanStorBlockDriverType:
 		_, exist := OceanStorDrivers[dockName]
@@ -119,25 +161,70 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 		break
 	case config.HuaweiFusionStorageDriverType:
 		d = &fusionstorage.Driver{}
+		_, exist := FusionstorageDrivers[dockName]
+		if exist {
+			fusionstorageDriver := FusionstorageDrivers[dockName]
+			d = &fusionstorageDriver
+		} else {
+			fusionstorageDriver := fusionstorage.Driver{}
+			FusionstorageDrivers[dockName] = fusionstorageDriver
+			d = &fusionstorageDriver
+		}
+		break
 	case config.HpeNimbleDriverType:
-		d = &nimble.Driver{}
+		_, exist := NimbleDrivers[dockName]
+		if exist {
+			nimbleDriver := NimbleDrivers[dockName]
+			d = &nimbleDriver
+		} else {
+			nimbleDriver := nimble.Driver{}
+			NimbleDrivers[dockName] = nimbleDriver
+			d = &nimbleDriver
+		}
 		break
 	case config.FujitsuEternusDriverType:
 		d = &eternus.Driver{}
+		_, exist := EternusDrivers[dockName]
+		if exist {
+			eternusDriver := EternusDrivers[dockName]
+			d = &eternusDriver
+		} else {
+			eternusDriver := eternus.Driver{}
+			EternusDrivers[dockName] = eternusDriver
+			d = &eternusDriver
+		}
 		break
 	case config.NetappOntapSanDriverType:
 		d = &ontap.SANDriver{}
+		_, exist := OntapSANDrivers[dockName]
+		if exist {
+			ontapSANDDriver := OntapSANDrivers[dockName]
+			d = &ontapSANDDriver
+		} else {
+			ontapSANDDriver := ontap.SANDriver{}
+			OntapSANDrivers[dockName] = ontapSANDDriver
+			d = &ontapSANDDriver
+		}
 		break
 	default:
 		d = &sample.Driver{}
+		_, exist := SampleDrivers[dockName]
+		if exist {
+			sampleDriver := SampleDrivers[dockName]
+			d = &sampleDriver
+		} else {
+			sampleDriver := sample.Driver{}
+			SampleDrivers[dockName] = sampleDriver
+			d = &sampleDriver
+		}
 		break
 	}
-
-	err := d.Setup(configPath)
-	if err != nil {
-		return nil, err
+	if !exist {
+		err := d.Setup(configPath)
+		if err != nil {
+			return nil, err
+		}
 	}
-
 	return d, nil
 }
 

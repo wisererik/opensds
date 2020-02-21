@@ -63,10 +63,8 @@ type CreateVolumeOpts struct {
 	SnapshotFromCloud bool `protobuf:"varint,16,opt,name=snapshotFromCloud,proto3" json:"snapshotFromCloud,omitempty"`
 	// The Serialized profile
 	Profile string `protobuf:"bytes,17,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,18,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,19,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,18,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -216,13 +214,6 @@ func (m *CreateVolumeOpts) GetProfile() string {
 	return ""
 }
 
-func (m *CreateVolumeOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *CreateVolumeOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -249,10 +240,8 @@ type DeleteVolumeOpts struct {
 	Context string `protobuf:"bytes,6,opt,name=context,proto3" json:"context,omitempty"`
 	// The Serialized profile
 	Profile string `protobuf:"bytes,7,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,8,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,9,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,8,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -332,13 +321,6 @@ func (m *DeleteVolumeOpts) GetProfile() string {
 	return ""
 }
 
-func (m *DeleteVolumeOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *DeleteVolumeOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -376,10 +358,8 @@ type ExtendVolumeOpts struct {
 	Context string `protobuf:"bytes,12,opt,name=context,proto3" json:"context,omitempty"`
 	// The Serialized profile
 	Profile string `protobuf:"bytes,13,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,14,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,15,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,14,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -501,13 +481,6 @@ func (m *ExtendVolumeOpts) GetProfile() string {
 	return ""
 }
 
-func (m *ExtendVolumeOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *ExtendVolumeOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -539,10 +512,8 @@ type CreateVolumeSnapshotOpts struct {
 	Context string `protobuf:"bytes,9,opt,name=context,proto3" json:"context,omitempty"`
 	// The Serialized profile
 	Profile string `protobuf:"bytes,10,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,11,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,12,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,11,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -643,13 +614,6 @@ func (m *CreateVolumeSnapshotOpts) GetProfile() string {
 	return ""
 }
 
-func (m *CreateVolumeSnapshotOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *CreateVolumeSnapshotOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -672,10 +636,8 @@ type DeleteVolumeSnapshotOpts struct {
 	Context string `protobuf:"bytes,5,opt,name=context,proto3" json:"context,omitempty"`
 	// The Serialized profile
 	Profile string `protobuf:"bytes,6,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,7,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,8,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,7,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -748,13 +710,6 @@ func (m *DeleteVolumeSnapshotOpts) GetProfile() string {
 	return ""
 }
 
-func (m *DeleteVolumeSnapshotOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *DeleteVolumeSnapshotOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -785,10 +740,8 @@ type CreateVolumeAttachmentOpts struct {
 	Context string `protobuf:"bytes,9,opt,name=context,proto3" json:"context,omitempty"`
 	// The protocol
 	AccessProtocol string `protobuf:"bytes,10,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,11,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,12,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,11,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -889,13 +842,6 @@ func (m *CreateVolumeAttachmentOpts) GetAccessProtocol() string {
 	return ""
 }
 
-func (m *CreateVolumeAttachmentOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *CreateVolumeAttachmentOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -922,10 +868,8 @@ type DeleteVolumeAttachmentOpts struct {
 	Context string `protobuf:"bytes,7,opt,name=context,proto3" json:"context,omitempty"`
 	// The protocol
 	AccessProtocol string `protobuf:"bytes,8,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,9,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,10,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,9,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1012,13 +956,6 @@ func (m *DeleteVolumeAttachmentOpts) GetAccessProtocol() string {
 	return ""
 }
 
-func (m *DeleteVolumeAttachmentOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *DeleteVolumeAttachmentOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -1046,9 +983,7 @@ type CreateSnapshotAttachmentOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,8,opt,name=context,proto3" json:"context,omitempty"`
 	// The protocol
-	AccessProtocol string `protobuf:"bytes,9,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,10,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	AccessProtocol       string   `protobuf:"bytes,9,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1142,13 +1077,6 @@ func (m *CreateSnapshotAttachmentOpts) GetAccessProtocol() string {
 	return ""
 }
 
-func (m *CreateSnapshotAttachmentOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // DeleteSnapshotAttachmentOpts is a structure which indicates all required
 // properties for deleting a snapshot attachment.
 type DeleteSnapshotAttachmentOpts struct {
@@ -1165,9 +1093,7 @@ type DeleteSnapshotAttachmentOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,6,opt,name=context,proto3" json:"context,omitempty"`
 	// The protocol
-	AccessProtocol string `protobuf:"bytes,7,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,8,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	AccessProtocol       string   `protobuf:"bytes,7,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1243,13 +1169,6 @@ func (m *DeleteSnapshotAttachmentOpts) GetContext() string {
 func (m *DeleteSnapshotAttachmentOpts) GetAccessProtocol() string {
 	if m != nil {
 		return m.AccessProtocol
-	}
-	return ""
-}
-
-func (m *DeleteSnapshotAttachmentOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
 	}
 	return ""
 }
@@ -1464,9 +1383,7 @@ type CreateReplicationOpts struct {
 	// replication bandwidth
 	ReplicationBandwidth int64 `protobuf:"varint,21,opt,name=ReplicationBandwidth,proto3" json:"ReplicationBandwidth,omitempty"`
 	// The Serialized profile
-	Profile string `protobuf:"bytes,22,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,23,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	Profile              string   `protobuf:"bytes,22,opt,name=profile,proto3" json:"profile,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1644,13 +1561,6 @@ func (m *CreateReplicationOpts) GetProfile() string {
 	return ""
 }
 
-func (m *CreateReplicationOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // Delete ReplicationOpts is a structure which indicates all required properties
 // for deleting a replication.
 // NOTE: Need to figure out how to handle more than 2 sites.
@@ -1689,9 +1599,7 @@ type DeleteReplicationOpts struct {
 	// Whether is primary replication
 	IsPrimary bool `protobuf:"varint,17,opt,name=isPrimary,proto3" json:"isPrimary,omitempty"`
 	// The Serialized profile
-	Profile string `protobuf:"bytes,18,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,19,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	Profile              string   `protobuf:"bytes,18,opt,name=profile,proto3" json:"profile,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1841,13 +1749,6 @@ func (m *DeleteReplicationOpts) GetProfile() string {
 	return ""
 }
 
-func (m *DeleteReplicationOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // Delete ReplicationOpts is a structure which indicates all required properties
 type EnableReplicationOpts struct {
 	// The uuid of the replication, optional when creating.
@@ -1884,9 +1785,7 @@ type EnableReplicationOpts struct {
 	// Whether is primary replication
 	IsPrimary bool `protobuf:"varint,17,opt,name=isPrimary,proto3" json:"isPrimary,omitempty"`
 	// The Serialized profile
-	Profile string `protobuf:"bytes,18,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,19,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	Profile              string   `protobuf:"bytes,18,opt,name=profile,proto3" json:"profile,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2036,13 +1935,6 @@ func (m *EnableReplicationOpts) GetProfile() string {
 	return ""
 }
 
-func (m *EnableReplicationOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // Delete ReplicationOpts is a structure which indicates all required properties
 type DisableReplicationOpts struct {
 	// The uuid of the replication, optional when creating.
@@ -2079,9 +1971,7 @@ type DisableReplicationOpts struct {
 	// Whether is primary replication
 	IsPrimary bool `protobuf:"varint,17,opt,name=isPrimary,proto3" json:"isPrimary,omitempty"`
 	// The Serialized profile
-	Profile string `protobuf:"bytes,18,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,19,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	Profile              string   `protobuf:"bytes,18,opt,name=profile,proto3" json:"profile,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2231,13 +2121,6 @@ func (m *DisableReplicationOpts) GetProfile() string {
 	return ""
 }
 
-func (m *DisableReplicationOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // Delete ReplicationOpts is a structure which indicates all required properties
 type FailoverReplicationOpts struct {
 	// The uuid of the replication, optional when creating.
@@ -2278,9 +2161,7 @@ type FailoverReplicationOpts struct {
 	// Whether is primary replication
 	IsPrimary bool `protobuf:"varint,19,opt,name=isPrimary,proto3" json:"isPrimary,omitempty"`
 	// The Serialized profile
-	Profile string `protobuf:"bytes,20,opt,name=profile,proto3" json:"profile,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,21,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	Profile              string   `protobuf:"bytes,20,opt,name=profile,proto3" json:"profile,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2444,13 +2325,6 @@ func (m *FailoverReplicationOpts) GetProfile() string {
 	return ""
 }
 
-func (m *FailoverReplicationOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 type FailoverReplicationOpts_FailoverRequest struct {
 	AllowAttachedVolume  bool     `protobuf:"varint,1,opt,name=allowAttachedVolume,proto3" json:"allowAttachedVolume,omitempty"`
 	SecondaryBackendId   string   `protobuf:"bytes,2,opt,name=secondaryBackendId,proto3" json:"secondaryBackendId,omitempty"`
@@ -2521,10 +2395,8 @@ type CreateVolumeGroupOpts struct {
 	PoolId string `protobuf:"bytes,8,opt,name=poolId,proto3" json:"poolId,omitempty"`
 	// The Context
 	Context string `protobuf:"bytes,9,opt,name=context,proto3" json:"context,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,10,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,11,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,10,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2618,13 +2490,6 @@ func (m *CreateVolumeGroupOpts) GetContext() string {
 	return ""
 }
 
-func (m *CreateVolumeGroupOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *CreateVolumeGroupOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -2645,10 +2510,8 @@ type UpdateVolumeGroupOpts struct {
 	PoolId string `protobuf:"bytes,5,opt,name=poolId,proto3" json:"poolId,omitempty"`
 	// The Context
 	Context string `protobuf:"bytes,6,opt,name=context,proto3" json:"context,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,7,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,8,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,7,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2721,13 +2584,6 @@ func (m *UpdateVolumeGroupOpts) GetContext() string {
 	return ""
 }
 
-func (m *UpdateVolumeGroupOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 func (m *UpdateVolumeGroupOpts) GetDockName() string {
 	if m != nil {
 		return m.DockName
@@ -2744,10 +2600,8 @@ type DeleteVolumeGroupOpts struct {
 	DriverName string `protobuf:"bytes,3,opt,name=driverName,proto3" json:"driverName,omitempty"`
 	// The Context
 	Context string `protobuf:"bytes,4,opt,name=context,proto3" json:"context,omitempty"`
-	// The driver config file path
-	ConfigPath string `protobuf:"bytes,5,opt,name=configPath,proto3" json:"configPath,omitempty"`
 	// The dock name
-	DockName             string   `protobuf:"bytes,6,opt,name=dockName,proto3" json:"dockName,omitempty"`
+	DockName             string   `protobuf:"bytes,5,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2802,13 +2656,6 @@ func (m *DeleteVolumeGroupOpts) GetDriverName() string {
 func (m *DeleteVolumeGroupOpts) GetContext() string {
 	if m != nil {
 		return m.Context
-	}
-	return ""
-}
-
-func (m *DeleteVolumeGroupOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
 	}
 	return ""
 }
@@ -2981,12 +2828,10 @@ type DeleteFileShareAclOpts struct {
 	// The Name
 	Name string `protobuf:"bytes,10,opt,name=Name,proto3" json:"Name,omitempty"`
 	// The metadata of the file share, optional.
-	Metadata map[string]string `protobuf:"bytes,11,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,12,opt,name=configPath,proto3" json:"configPath,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Metadata             map[string]string `protobuf:"bytes,11,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
 }
 
 func (m *DeleteFileShareAclOpts) Reset()         { *m = DeleteFileShareAclOpts{} }
@@ -3091,13 +2936,6 @@ func (m *DeleteFileShareAclOpts) GetMetadata() map[string]string {
 	return nil
 }
 
-func (m *DeleteFileShareAclOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // CreateFileShareAclOpts is a structure which indicates all required properties for creating a file share.
 type CreateFileShareAclOpts struct {
 	// The uuid of the file share, optional when creating.
@@ -3121,12 +2959,10 @@ type CreateFileShareAclOpts struct {
 	// The Name
 	Name string `protobuf:"bytes,10,opt,name=Name,proto3" json:"Name,omitempty"`
 	// The metadata of the file share, optional.
-	Metadata map[string]string `protobuf:"bytes,11,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,12,opt,name=configPath,proto3" json:"configPath,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Metadata             map[string]string `protobuf:"bytes,11,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
 }
 
 func (m *CreateFileShareAclOpts) Reset()         { *m = CreateFileShareAclOpts{} }
@@ -3231,13 +3067,6 @@ func (m *CreateFileShareAclOpts) GetMetadata() map[string]string {
 	return nil
 }
 
-func (m *CreateFileShareAclOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // CreateFileShareOpts is a structure which indicates all required properties for creating a file share.
 type CreateFileShareOpts struct {
 	// The uuid of the file share, optional when creating.
@@ -3267,9 +3096,7 @@ type CreateFileShareOpts struct {
 	// The snapshots
 	SnapshotId string `protobuf:"bytes,13,opt,name=snapshotId,proto3" json:"snapshotId,omitempty"`
 	// The snapshots
-	SnapshotName string `protobuf:"bytes,14,opt,name=snapshotName,proto3" json:"snapshotName,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,15,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	SnapshotName         string   `protobuf:"bytes,14,opt,name=snapshotName,proto3" json:"snapshotName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -3398,13 +3225,6 @@ func (m *CreateFileShareOpts) GetSnapshotName() string {
 	return ""
 }
 
-func (m *CreateFileShareOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // DeleteFileShareOpts is a structure which indicates all required properties
 // for deleting a file share.
 type DeleteFileShareOpts struct {
@@ -3425,9 +3245,7 @@ type DeleteFileShareOpts struct {
 	// The name of pool
 	Poolname string `protobuf:"bytes,8,opt,name=poolname,proto3" json:"poolname,omitempty"`
 	// The ExportLocations
-	ExportLocations []string `protobuf:"bytes,9,rep,name=exportLocations,proto3" json:"exportLocations,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,10,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	ExportLocations      []string `protobuf:"bytes,9,rep,name=exportLocations,proto3" json:"exportLocations,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -3521,13 +3339,6 @@ func (m *DeleteFileShareOpts) GetExportLocations() []string {
 	return nil
 }
 
-func (m *DeleteFileShareOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // CreateFileShareSnapshotOpts is a structure which indicates all required
 // properties for creating a file share snapshot.
 type CreateFileShareSnapshotOpts struct {
@@ -3548,12 +3359,10 @@ type CreateFileShareSnapshotOpts struct {
 	// The Serialized profile
 	Profile string `protobuf:"bytes,8,opt,name=profile,proto3" json:"profile,omitempty"`
 	// The metadata of the fileshare, optional.
-	Metadata map[string]string `protobuf:"bytes,9,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,10,opt,name=configPath,proto3" json:"configPath,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Metadata             map[string]string `protobuf:"bytes,9,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
 }
 
 func (m *CreateFileShareSnapshotOpts) Reset()         { *m = CreateFileShareSnapshotOpts{} }
@@ -3644,13 +3453,6 @@ func (m *CreateFileShareSnapshotOpts) GetMetadata() map[string]string {
 	return nil
 }
 
-func (m *CreateFileShareSnapshotOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
-}
-
 // DeleteFileShareSnapshotOpts is a structure which indicates all required
 // properties for deleting a file share snapshot.
 type DeleteFileShareSnapshotOpts struct {
@@ -3665,12 +3467,10 @@ type DeleteFileShareSnapshotOpts struct {
 	// The Serialized profile
 	Profile string `protobuf:"bytes,5,opt,name=profile,proto3" json:"profile,omitempty"`
 	// The metadata of the fileshare, optional.
-	Metadata map[string]string `protobuf:"bytes,6,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,7,opt,name=configPath,proto3" json:"configPath,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Metadata             map[string]string `protobuf:"bytes,6,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
 }
 
 func (m *DeleteFileShareSnapshotOpts) Reset()         { *m = DeleteFileShareSnapshotOpts{} }
@@ -3738,13 +3538,6 @@ func (m *DeleteFileShareSnapshotOpts) GetMetadata() map[string]string {
 		return m.Metadata
 	}
 	return nil
-}
-
-func (m *DeleteFileShareSnapshotOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
-	}
-	return ""
 }
 
 // Generic response, it return:
@@ -4003,9 +3796,7 @@ type CollectMetricsOpts struct {
 	// context
 	Context string `protobuf:"bytes,3,opt,name=context,proto3" json:"context,omitempty"`
 	// metrics driver
-	DriverName string `protobuf:"bytes,4,opt,name=driverName,proto3" json:"driverName,omitempty"`
-	// The driver config file path
-	ConfigPath           string   `protobuf:"bytes,5,opt,name=configPath,proto3" json:"configPath,omitempty"`
+	DriverName           string   `protobuf:"bytes,4,opt,name=driverName,proto3" json:"driverName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -4060,13 +3851,6 @@ func (m *CollectMetricsOpts) GetContext() string {
 func (m *CollectMetricsOpts) GetDriverName() string {
 	if m != nil {
 		return m.DriverName
-	}
-	return ""
-}
-
-func (m *CollectMetricsOpts) GetConfigPath() string {
-	if m != nil {
-		return m.ConfigPath
 	}
 	return ""
 }
