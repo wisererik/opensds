@@ -100,7 +100,6 @@ var (
 // Init
 func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 	var d VolumeDriver
-	exist := false
 
 	switch resourceType {
 	case config.CinderDriverType:
@@ -134,7 +133,7 @@ func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 		}
 		break
 	case config.LVMDriverType:
-		_, exist = LvmDrivers[dockName]
+		_, exist := LvmDrivers[dockName]
 		if exist {
 			lvmDriver := LvmDrivers[dockName]
 			d = &lvmDriver
