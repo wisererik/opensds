@@ -181,7 +181,7 @@ func (d *MetricDriver) CollectMetrics() ([]*model.MetricSpec, error) {
 	return metricArray, err
 }
 
-func (d *MetricDriver) Setup() error {
+func (d *MetricDriver) Setup(configPath string) error {
 	cli, err := NewMetricCli()
 	if err != nil {
 		return err

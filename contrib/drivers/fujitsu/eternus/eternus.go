@@ -26,7 +26,6 @@ import (
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
 
-	"github.com/opensds/opensds/pkg/utils/config"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -37,11 +36,11 @@ type Driver struct {
 }
 
 // Setup eternus driver
-func (d *Driver) Setup() (err error) {
+func (d *Driver) Setup(configPath string) (err error) {
 	// Read fujitsu eternus config file
 	conf := &EternusConfig{}
 	d.conf = conf
-	path := config.CONF.OsdsDock.Backends.FujitsuEternus.ConfigPath
+	path := configPath
 
 	if "" == path {
 		path = defaultConfPath

@@ -35,8 +35,8 @@ func init() {
 	CONF.OsdsDock = OsdsDock{
 		ApiEndpoint:     "localhost:50050",
 		EnabledBackends: []string{"sample"},
-		Backends: Backends{
-			Sample: BackendProperties{
+		Backends: []BackendProperties{
+			{
 				Name:        "sample",
 				Description: "sample backend service",
 				DriverName:  "sample",

@@ -34,6 +34,8 @@ const (
 	ConfDefaultValue
 )
 
+var notParsedSections []string
+
 func setSlice(v reflect.Value, str string) error {
 	sList := strings.Split(str, ",")
 	s := reflect.MakeSlice(v.Type(), 0, 5)
@@ -155,11 +157,13 @@ func setSlice(v reflect.Value, str string) error {
 
 func parseItems(section string, v reflect.Value, cfg *ini.File) error {
 	for i := 0; i < v.Type().NumField(); i++ {
-
 		field := v.Field(i)
 		tag := v.Type().Field(i).Tag.Get("conf")
 		if "" == tag {
 			parseSections(cfg, field.Type(), field)
+		} else if tag == "backends" {
+			// Handle backend separately
+			continue
 		}
 		tags := strings.SplitN(tag, ",", 2)
 		if !field.CanSet() {
@@ -225,6 +229,7 @@ func parseSections(cfg *ini.File, t reflect.Type, v reflect.Value) error {
 		v = v.Elem()
 		t = t.Elem()
 	}
+	// parse struct
 	for i := 0; i < t.NumField(); i++ {
 		field := v.Field(i)
 		section := t.Field(i).Tag.Get("conf")
@@ -236,8 +241,45 @@ func parseSections(cfg *ini.File, t reflect.Type, v reflect.Value) error {
 		if err := parseItems(section, field, cfg); err != nil {
 			return err
 		}
+		if len(notParsedSections) != 0 {
+			for i := 0; i < len(notParsedSections); i++ {
+				if strings.EqualFold(section, notParsedSections[i]) {
+					if i == len(notParsedSections)-1 {
+						notParsedSections = notParsedSections[:i]
+					} else {
+						notParsedSections = append(notParsedSections[:i], notParsedSections[i+1:]...)
+					}
+				}
+			}
+		}
 	}
 	return nil
+}
+
+func parseBackends(cfg *ini.File, sections []string, v reflect.Value) {
+	var backends []BackendProperties
+	for i := 0; i < len(sections); i++ {
+		var backend BackendProperties
+		key, err := cfg.Section(sections[i]).GetKey("name")
+		if err == nil {
+			backend.Name = key.Value()
+		}
+		key, err = cfg.Section(sections[i]).GetKey("description")
+		if err == nil {
+			backend.Description = key.Value()
+		}
+		key, err = cfg.Section(sections[i]).GetKey("driver_name")
+		if err == nil {
+			backend.DriverName = key.Value()
+		}
+		key, err = cfg.Section(sections[i]).GetKey("config_path")
+		if err == nil {
+			backend.ConfigPath = key.Value()
+		}
+		backends = append(backends, backend)
+	}
+	backendsReflect := reflect.ValueOf(backends)
+	v.Set(backendsReflect)
 }
 
 func initConf(confFile string, conf interface{}) {
@@ -247,8 +289,21 @@ func initConf(confFile string, conf interface{}) {
 	}
 	t := reflect.TypeOf(conf)
 	v := reflect.ValueOf(conf)
+	notParsedSections = make([]string, 0)
+	if cfg != nil {
+		notParsedSections = cfg.SectionStrings()
+	}
 	if err := parseSections(cfg, t, v); err != nil {
 		log.Fatalf("[ERROR] parse configure file failed: %v", err)
+	}
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+		t = t.Elem()
+	}
+	// After all the sections which the section name is known have been parsed,
+	// the rest sections should be sections for drivers
+	if len(notParsedSections) != 0 && v.FieldByName("Backends").IsValid() {
+		parseBackends(cfg, notParsedSections, v.FieldByName("Backends"))
 	}
 }
 
@@ -283,13 +338,9 @@ func (c *Config) Load() {
 
 func GetBackendsMap() map[string]BackendProperties {
 	backendsMap := map[string]BackendProperties{}
-	v := reflect.ValueOf(CONF.Backends)
-	t := reflect.TypeOf(CONF.Backends)
 
-	for i := 0; i < t.NumField(); i++ {
-		feild := v.Field(i)
-		name := t.Field(i).Tag.Get("conf")
-		backendsMap[name] = feild.Interface().(BackendProperties)
+	for i := 0; i < len(CONF.Backends); i++ {
+		backendsMap[CONF.Backends[i].Name] = CONF.Backends[i]
 	}
 	return backendsMap
 }

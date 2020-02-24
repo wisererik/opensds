@@ -44,6 +44,8 @@ const (
 	unavailableStatus = "unavailable"
 )
 
+var configPaths = make(map[string]string)
+
 type Context struct {
 	StopChan chan bool
 	ErrChan  chan error
@@ -115,10 +117,10 @@ func (pdd *provisionDockDiscoverer) Init() error {
 		if b.Name == "" {
 			continue
 		}
-
+		configPaths[b.Name] = b.ConfigPath
 		dck := &model.DockSpec{
 			BaseModel: &model.BaseModel{
-				Id: uuid.NewV5(uuid.NamespaceOID, host+":"+b.DriverName).String(),
+				Id: uuid.NewV5(uuid.NamespaceOID, host+":"+b.Name).String(),
 			},
 			Name:        b.Name,
 			Description: b.Description,
@@ -138,7 +140,6 @@ func (pdd *provisionDockDiscoverer) Init() error {
 		}
 		pdd.dcks = append(pdd.dcks, dck)
 	}
-
 	return nil
 }
 
@@ -168,7 +169,7 @@ func (pdd *provisionDockDiscoverer) Discover() error {
 	for _, dck := range pdd.dcks {
 		// Call function of StorageDrivers configured by storage drivers.
 		if utils.Contains(filesharedrivers, dck.DriverName) {
-			d := fd.Init(dck.DriverName)
+			d := fd.Init(dck.DriverName, configPaths[dck.Name])
 			defer fd.Clean(d)
 			pols, err = d.ListPools()
 			for _, pol := range pols {
@@ -178,7 +179,7 @@ func (pdd *provisionDockDiscoverer) Discover() error {
 				pol.Status = availableStatus
 			}
 		} else {
-			d, err := drivers.Init(dck.DriverName)
+			d, err := drivers.Init(dck.DriverName, configPaths[dck.Name], dck.Name)
 			if err != nil {
 				log.Errorf("Init driver %s failed: %v", dck.DriverName, err)
 				continue
@@ -189,7 +190,7 @@ func (pdd *provisionDockDiscoverer) Discover() error {
 
 			replicationDriverName := dck.Metadata["HostReplicationDriver"]
 			replicationType := model.ReplicationTypeHost
-			if drivers.IsSupportArrayBasedReplication(dck.DriverName) {
+			if drivers.IsSupportArrayBasedReplication(dck.Name) {
 				replicationType = model.ReplicationTypeArray
 				replicationDriverName = dck.DriverName
 			}

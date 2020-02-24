@@ -226,7 +226,7 @@ func formatDiskName(instanceID string) string {
 	instanceID = strings.Replace(instanceID, "/dev/", "", -1)
 	return instanceID
 }
-func (d *MetricDriver) Setup() error {
+func (d *MetricDriver) Setup(configPath string) error {
 
 	cli, err := NewMetricCli()
 	if err != nil {

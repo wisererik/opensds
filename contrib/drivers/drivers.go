@@ -18,7 +18,6 @@ driver is sample driver used for testing. If you want to use other storage
 plugin, just modify Init() and Clean() method.
 
 */
-
 package drivers
 
 import (
@@ -42,7 +41,7 @@ import (
 // drivers, currently support sample, lvm, ceph, cinder and so forth.
 type VolumeDriver interface {
 	//Any initialization the volume driver does while starting.
-	Setup() error
+	Setup(configPath string) error
 	//Any operation the volume driver does while stopping.
 	Unset() error
 
@@ -86,50 +85,178 @@ type VolumeDriver interface {
 }
 
 var (
-	OceanStorDriver = oceanstor.Driver{}
+	CinderDrivers        = make(map[string]cinder.Driver)
+	CephDrivers          = make(map[string]ceph.Driver)
+	LvmDrivers           = make(map[string]lvm.Driver)
+	SpectrumscaleDrivers = make(map[string]spectrumscale.Driver)
+	OceanStorDrivers     = make(map[string]oceanstor.Driver)
+	FusionstorageDrivers = make(map[string]fusionstorage.Driver)
+	NimbleDrivers        = make(map[string]nimble.Driver)
+	EternusDrivers       = make(map[string]eternus.Driver)
+	OntapSANDrivers      = make(map[string]ontap.SANDriver)
+	SampleDrivers        = make(map[string]sample.Driver)
 )
 
 // Init
-func Init(resourceType string) (VolumeDriver, error) {
+func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 	var d VolumeDriver
 
 	switch resourceType {
 	case config.CinderDriverType:
-		d = &cinder.Driver{}
+		_, exist := CinderDrivers[dockName]
+		if exist {
+			cinderDriver := CinderDrivers[dockName]
+			d = &cinderDriver
+		} else {
+			cinderDriver := cinder.Driver{}
+			d = &cinderDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			CinderDrivers[dockName] = cinderDriver
+		}
 		break
 	case config.CephDriverType:
-		d = &ceph.Driver{}
+		_, exist := CephDrivers[dockName]
+		if exist {
+			cephDriver := CephDrivers[dockName]
+			d = &cephDriver
+		} else {
+			cephDriver := ceph.Driver{}
+			d = &cephDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			CephDrivers[dockName] = cephDriver
+		}
 		break
 	case config.LVMDriverType:
-		d = &lvm.Driver{}
+		_, exist := LvmDrivers[dockName]
+		if exist {
+			lvmDriver := LvmDrivers[dockName]
+			d = &lvmDriver
+		} else {
+			lvmDriver := lvm.Driver{}
+			d = &lvmDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			LvmDrivers[dockName] = lvmDriver
+		}
 		break
 	case config.IBMSpectrumScaleDriverType:
-		d = &spectrumscale.Driver{}
+		_, exist := SpectrumscaleDrivers[dockName]
+		if exist {
+			spectrumscaleDriver := SpectrumscaleDrivers[dockName]
+			d = &spectrumscaleDriver
+		} else {
+			spectrumscaleDriver := spectrumscale.Driver{}
+			d = &spectrumscaleDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			SpectrumscaleDrivers[dockName] = spectrumscaleDriver
+		}
 		break
 	case config.HuaweiOceanStorBlockDriverType:
-		d = &OceanStorDriver
+		_, exist := OceanStorDrivers[dockName]
+		if exist {
+			oceanstorDriver := OceanStorDrivers[dockName]
+			d = &oceanstorDriver
+		} else {
+			oceanstorDriver := oceanstor.Driver{}
+			d = &oceanstorDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			OceanStorDrivers[dockName] = oceanstorDriver
+		}
 		break
 	case config.HuaweiFusionStorageDriverType:
 		d = &fusionstorage.Driver{}
+		_, exist := FusionstorageDrivers[dockName]
+		if exist {
+			fusionstorageDriver := FusionstorageDrivers[dockName]
+			d = &fusionstorageDriver
+		} else {
+			fusionstorageDriver := fusionstorage.Driver{}
+			d = &fusionstorageDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			FusionstorageDrivers[dockName] = fusionstorageDriver
+		}
+		break
 	case config.HpeNimbleDriverType:
-		d = &nimble.Driver{}
+		_, exist := NimbleDrivers[dockName]
+		if exist {
+			nimbleDriver := NimbleDrivers[dockName]
+			d = &nimbleDriver
+		} else {
+			nimbleDriver := nimble.Driver{}
+			d = &nimbleDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			NimbleDrivers[dockName] = nimbleDriver
+		}
 		break
 	case config.FujitsuEternusDriverType:
 		d = &eternus.Driver{}
+		_, exist := EternusDrivers[dockName]
+		if exist {
+			eternusDriver := EternusDrivers[dockName]
+			d = &eternusDriver
+		} else {
+			eternusDriver := eternus.Driver{}
+			d = &eternusDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			EternusDrivers[dockName] = eternusDriver
+		}
 		break
 	case config.NetappOntapSanDriverType:
 		d = &ontap.SANDriver{}
+		_, exist := OntapSANDrivers[dockName]
+		if exist {
+			ontapSANDDriver := OntapSANDrivers[dockName]
+			d = &ontapSANDDriver
+		} else {
+			ontapSANDDriver := ontap.SANDriver{}
+			d = &ontapSANDDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			OntapSANDrivers[dockName] = ontapSANDDriver
+		}
 		break
 	default:
 		d = &sample.Driver{}
+		_, exist := SampleDrivers[dockName]
+		if exist {
+			sampleDriver := SampleDrivers[dockName]
+			d = &sampleDriver
+		} else {
+			sampleDriver := sample.Driver{}
+			d = &sampleDriver
+			err := d.Setup(configPath)
+			if err != nil {
+				return nil, err
+			}
+			SampleDrivers[dockName] = sampleDriver
+		}
 		break
 	}
-
-	err := d.Setup()
-	if err != nil {
-		return nil, err
-	}
-
 	return d, nil
 }
 
@@ -179,7 +306,7 @@ func CleanMetricDriver(d MetricDriver) MetricDriver {
 
 type MetricDriver interface {
 	//Any initialization the metric driver does while starting.
-	Setup() error
+	Setup(configPath string) error
 	//Any operation the metric driver does while stopping.
 	Teardown() error
 	// Collect metrics for all supported resources
@@ -187,7 +314,7 @@ type MetricDriver interface {
 }
 
 // Init
-func InitMetricDriver(resourceType string) MetricDriver {
+func InitMetricDriver(resourceType string, configPath string) MetricDriver {
 	var d MetricDriver
 	switch resourceType {
 	case config.LVMDriverType:
@@ -203,6 +330,6 @@ func InitMetricDriver(resourceType string) MetricDriver {
 		//d = &sample.Driver{}
 		break
 	}
-	d.Setup()
+	d.Setup(configPath)
 	return d
 }

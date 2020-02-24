@@ -62,7 +62,9 @@ type CreateVolumeOpts struct {
 	// Down load snapshot from cloud
 	SnapshotFromCloud bool `protobuf:"varint,16,opt,name=snapshotFromCloud,proto3" json:"snapshotFromCloud,omitempty"`
 	// The Serialized profile
-	Profile              string   `protobuf:"bytes,17,opt,name=profile,proto3" json:"profile,omitempty"`
+	Profile string `protobuf:"bytes,17,opt,name=profile,proto3" json:"profile,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,18,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -212,6 +214,13 @@ func (m *CreateVolumeOpts) GetProfile() string {
 	return ""
 }
 
+func (m *CreateVolumeOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // DeleteVolumeOpts is a structure which indicates all required properties
 // for deleting a volume.
 type DeleteVolumeOpts struct {
@@ -230,7 +239,9 @@ type DeleteVolumeOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,6,opt,name=context,proto3" json:"context,omitempty"`
 	// The Serialized profile
-	Profile              string   `protobuf:"bytes,7,opt,name=profile,proto3" json:"profile,omitempty"`
+	Profile string `protobuf:"bytes,7,opt,name=profile,proto3" json:"profile,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,8,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -310,6 +321,13 @@ func (m *DeleteVolumeOpts) GetProfile() string {
 	return ""
 }
 
+func (m *DeleteVolumeOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // ExtendVolumeOpts is a structure which indicates all required properties
 // for Extending a volume.
 type ExtendVolumeOpts struct {
@@ -339,7 +357,9 @@ type ExtendVolumeOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,12,opt,name=context,proto3" json:"context,omitempty"`
 	// The Serialized profile
-	Profile              string   `protobuf:"bytes,13,opt,name=profile,proto3" json:"profile,omitempty"`
+	Profile string `protobuf:"bytes,13,opt,name=profile,proto3" json:"profile,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,14,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -461,6 +481,13 @@ func (m *ExtendVolumeOpts) GetProfile() string {
 	return ""
 }
 
+func (m *ExtendVolumeOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // CreateVolumeSnapshotOpts is a structure which indicates all required
 // properties for creating a volume snapshot.
 type CreateVolumeSnapshotOpts struct {
@@ -484,7 +511,9 @@ type CreateVolumeSnapshotOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,9,opt,name=context,proto3" json:"context,omitempty"`
 	// The Serialized profile
-	Profile              string   `protobuf:"bytes,10,opt,name=profile,proto3" json:"profile,omitempty"`
+	Profile string `protobuf:"bytes,10,opt,name=profile,proto3" json:"profile,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,11,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -585,6 +614,13 @@ func (m *CreateVolumeSnapshotOpts) GetProfile() string {
 	return ""
 }
 
+func (m *CreateVolumeSnapshotOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // DeleteVolumeSnapshotOpts is a structure which indicates all required
 // properties for deleting a volume snapshot.
 type DeleteVolumeSnapshotOpts struct {
@@ -599,7 +635,9 @@ type DeleteVolumeSnapshotOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,5,opt,name=context,proto3" json:"context,omitempty"`
 	// The Serialized profile
-	Profile              string   `protobuf:"bytes,6,opt,name=profile,proto3" json:"profile,omitempty"`
+	Profile string `protobuf:"bytes,6,opt,name=profile,proto3" json:"profile,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,7,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -672,6 +710,13 @@ func (m *DeleteVolumeSnapshotOpts) GetProfile() string {
 	return ""
 }
 
+func (m *DeleteVolumeSnapshotOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // CreateVolumeAttachmentOpts is a structure which indicates all required
 // properties for creating a volume attachment.
 type CreateVolumeAttachmentOpts struct {
@@ -694,7 +739,9 @@ type CreateVolumeAttachmentOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,9,opt,name=context,proto3" json:"context,omitempty"`
 	// The protocol
-	AccessProtocol       string   `protobuf:"bytes,10,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
+	AccessProtocol string `protobuf:"bytes,10,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,11,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -795,6 +842,13 @@ func (m *CreateVolumeAttachmentOpts) GetAccessProtocol() string {
 	return ""
 }
 
+func (m *CreateVolumeAttachmentOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 // DeleteVolumeAttachmentOpts is a structure which indicates all required
 // properties for deleting a volume attachment.
 type DeleteVolumeAttachmentOpts struct {
@@ -813,7 +867,9 @@ type DeleteVolumeAttachmentOpts struct {
 	// The Context
 	Context string `protobuf:"bytes,7,opt,name=context,proto3" json:"context,omitempty"`
 	// The protocol
-	AccessProtocol       string   `protobuf:"bytes,8,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
+	AccessProtocol string `protobuf:"bytes,8,opt,name=AccessProtocol,proto3" json:"AccessProtocol,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,9,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -896,6 +952,13 @@ func (m *DeleteVolumeAttachmentOpts) GetContext() string {
 func (m *DeleteVolumeAttachmentOpts) GetAccessProtocol() string {
 	if m != nil {
 		return m.AccessProtocol
+	}
+	return ""
+}
+
+func (m *DeleteVolumeAttachmentOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
 	}
 	return ""
 }
@@ -2331,7 +2394,9 @@ type CreateVolumeGroupOpts struct {
 	// The pool belongs to the group.
 	PoolId string `protobuf:"bytes,8,opt,name=poolId,proto3" json:"poolId,omitempty"`
 	// The Context
-	Context              string   `protobuf:"bytes,9,opt,name=context,proto3" json:"context,omitempty"`
+	Context string `protobuf:"bytes,9,opt,name=context,proto3" json:"context,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,10,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2425,6 +2490,13 @@ func (m *CreateVolumeGroupOpts) GetContext() string {
 	return ""
 }
 
+func (m *CreateVolumeGroupOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 type UpdateVolumeGroupOpts struct {
 	// The uuid of the volume group, optional when updating.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -2437,7 +2509,9 @@ type UpdateVolumeGroupOpts struct {
 	// The pool belongs to the group.
 	PoolId string `protobuf:"bytes,5,opt,name=poolId,proto3" json:"poolId,omitempty"`
 	// The Context
-	Context              string   `protobuf:"bytes,6,opt,name=context,proto3" json:"context,omitempty"`
+	Context string `protobuf:"bytes,6,opt,name=context,proto3" json:"context,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,7,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2510,6 +2584,13 @@ func (m *UpdateVolumeGroupOpts) GetContext() string {
 	return ""
 }
 
+func (m *UpdateVolumeGroupOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
+	}
+	return ""
+}
+
 type DeleteVolumeGroupOpts struct {
 	// The uuid of the volume group, optional when deleting.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -2518,7 +2599,9 @@ type DeleteVolumeGroupOpts struct {
 	// The driver of the volume group.
 	DriverName string `protobuf:"bytes,3,opt,name=driverName,proto3" json:"driverName,omitempty"`
 	// The Context
-	Context              string   `protobuf:"bytes,4,opt,name=context,proto3" json:"context,omitempty"`
+	Context string `protobuf:"bytes,4,opt,name=context,proto3" json:"context,omitempty"`
+	// The dock name
+	DockName             string   `protobuf:"bytes,5,opt,name=dockName,proto3" json:"dockName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -2573,6 +2656,13 @@ func (m *DeleteVolumeGroupOpts) GetDriverName() string {
 func (m *DeleteVolumeGroupOpts) GetContext() string {
 	if m != nil {
 		return m.Context
+	}
+	return ""
+}
+
+func (m *DeleteVolumeGroupOpts) GetDockName() string {
+	if m != nil {
+		return m.DockName
 	}
 	return ""
 }

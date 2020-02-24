@@ -35,7 +35,6 @@ import (
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
 	"github.com/opensds/opensds/pkg/utils"
-	"github.com/opensds/opensds/pkg/utils/config"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -148,9 +147,9 @@ type Driver struct {
 	conf *CephConfig
 }
 
-func (d *Driver) Setup() error {
+func (d *Driver) Setup(configPath string) error {
 	d.conf = &CephConfig{ConfigFile: "/etc/ceph/ceph.conf"}
-	p := config.CONF.OsdsDock.Backends.Ceph.ConfigPath
+	p := configPath
 	if "" == p {
 		p = defaultConfPath
 	}

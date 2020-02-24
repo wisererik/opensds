@@ -25,7 +25,6 @@ import (
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
 	"github.com/opensds/opensds/pkg/utils"
-	"github.com/opensds/opensds/pkg/utils/config"
 )
 
 // ReplicationDriver
@@ -35,11 +34,11 @@ type ReplicationDriver struct {
 }
 
 // Setup
-func (r *ReplicationDriver) Setup() (err error) {
+func (r *ReplicationDriver) Setup(configPath string) (err error) {
 	// Read huawei oceanstor config file
 	conf := &OceanStorConfig{}
 	r.conf = conf
-	path := config.CONF.OsdsDock.Backends.HuaweiOceanStorBlock.ConfigPath
+	path := configPath
 
 	if "" == path {
 		path = defaultConfPath

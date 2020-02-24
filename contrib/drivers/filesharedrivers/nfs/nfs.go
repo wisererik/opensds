@@ -24,7 +24,6 @@ import (
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
 	"github.com/opensds/opensds/pkg/utils"
-	"github.com/opensds/opensds/pkg/utils/config"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -65,10 +64,10 @@ type Driver struct {
 	cli  *Cli
 }
 
-func (d *Driver) Setup() error {
+func (d *Driver) Setup(configPath string) error {
 	// Read nfs config file
 	d.conf = &NFSConfig{TgtBindIp: defaultTgtBindIp, TgtConfDir: defaultTgtConfDir}
-	p := config.CONF.OsdsDock.Backends.NFS.ConfigPath
+	p := configPath
 	if "" == p {
 		p = defaultConfPath
 	}

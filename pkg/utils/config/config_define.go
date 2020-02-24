@@ -62,14 +62,14 @@ type OsdsLet struct {
 }
 
 type OsdsDock struct {
-	ApiEndpoint                string        `conf:"api_endpoint,localhost:50050"`
-	DockType                   string        `conf:"dock_type,provisioner"`
-	EnabledBackends            []string      `conf:"enabled_backends,lvm"`
-	Daemon                     bool          `conf:"daemon,false"`
-	BindIp                     string        `conf:"bind_ip"` // Just used for attacher dock
-	HostBasedReplicationDriver string        `conf:"host_based_replication_driver,drbd"`
-	LogFlushFrequency          time.Duration `conf:"log_flush_frequency,5s"` // Default value is 5s
-	Backends
+	ApiEndpoint                string              `conf:"api_endpoint,localhost:50050"`
+	DockType                   string              `conf:"dock_type,provisioner"`
+	EnabledBackends            []string            `conf:"enabled_backends,lvm"`
+	Daemon                     bool                `conf:"daemon,false"`
+	BindIp                     string              `conf:"bind_ip"` // Just used for attacher dock
+	HostBasedReplicationDriver string              `conf:"host_based_replication_driver,drbd"`
+	LogFlushFrequency          time.Duration       `conf:"log_flush_frequency,5s"` // Default value is 5s
+	Backends                   []BackendProperties `conf:"backends"`
 }
 
 type Database struct {
@@ -91,23 +91,6 @@ type BackendProperties struct {
 	DriverName         string `conf:"driver_name"`
 	ConfigPath         string `conf:"config_path"`
 	SupportReplication bool   `conf:"support_replication,false"`
-}
-
-type Backends struct {
-	Ceph                 BackendProperties `conf:"ceph"`
-	Cinder               BackendProperties `conf:"cinder"`
-	Sample               BackendProperties `conf:"sample"`
-	LVM                  BackendProperties `conf:"lvm"`
-	IBMSpectrumScale     BackendProperties `conf:"spectrumscale"`
-	HuaweiOceanStorBlock BackendProperties `conf:"huawei_oceanstor_block"`
-	HuaweiFusionStorage  BackendProperties `conf:"huawei_fusionstorage"`
-	HuaweiOceanStorFile  BackendProperties `conf:"huawei_oceanstor_file"`
-	HpeNimble            BackendProperties `conf:"hpe_nimble"`
-	NFS                  BackendProperties `conf:"nfs"`
-	Manila               BackendProperties `conf:"manila"`
-	FujitsuEternus       BackendProperties `conf:"fujitsu_eternus"`
-	Chubaofs             BackendProperties `conf:"chubaofs"`
-	NetappOntapSan       BackendProperties `conf:"netapp_ontap_san"`
 }
 
 type KeystoneAuthToken struct {

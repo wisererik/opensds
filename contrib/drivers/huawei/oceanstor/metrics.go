@@ -21,7 +21,6 @@ import (
 	log "github.com/golang/glog"
 	. "github.com/opensds/opensds/contrib/drivers/utils/config"
 	"github.com/opensds/opensds/pkg/model"
-	"github.com/opensds/opensds/pkg/utils/config"
 	uuid "github.com/satori/go.uuid"
 	"gopkg.in/yaml.v2"
 )
@@ -289,9 +288,9 @@ func (d *MetricDriver) CollectMetrics() ([]*model.MetricSpec, error) {
 	return metricAll, nil
 }
 
-func (d *MetricDriver) Setup() (err error) {
+func (d *MetricDriver) Setup(configPath string) (err error) {
 	// Read huawei oceanstor config file
-	path := config.CONF.OsdsDock.Backends.HuaweiOceanStorBlock.ConfigPath
+	path := configPath
 	if "" == path {
 		path = defaultConfPath
 	}

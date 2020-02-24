@@ -57,7 +57,7 @@ var expctedMetricMap map[string]map[string]string = map[string]map[string]string
 
 func TestMetricDriverSetup(t *testing.T) {
 	var d = &MetricDriver{}
-	if err := d.Setup(); err != nil {
+	if err := d.Setup(""); err != nil {
 		t.Errorf("setup lvm metric  driver failed: %+v\n", err)
 	}
 }
@@ -89,7 +89,7 @@ func NewMetricFakeExecuter(respMap map[string]*MetricFakeResp) exec.Executer {
 
 func TestGetMetricList(t *testing.T) {
 	var md = &MetricDriver{}
-	md.Setup()
+	md.Setup("")
 	returnedMetricList, err := md.GetMetricList("volume")
 	if err != nil {
 		t.Error("failed to validate metric list:", err)
@@ -101,7 +101,7 @@ func TestGetMetricList(t *testing.T) {
 
 func TestCollectMetrics(t *testing.T) {
 	var md = &MetricDriver{}
-	md.Setup()
+	md.Setup("")
 	md.cli.RootExecuter = NewMetricFakeExecuter(respMap)
 	md.cli.BaseExecuter = NewMetricFakeExecuter(respMap)
 	var tempMetricArray []*model.MetricSpec

@@ -22,8 +22,6 @@ plugin, just modify Init() and Clean() method.
 package drivers
 
 import (
-	"reflect"
-
 	"github.com/opensds/opensds/contrib/drivers/drbd"
 	"github.com/opensds/opensds/contrib/drivers/huawei/oceanstor"
 	scms "github.com/opensds/opensds/contrib/drivers/scutech/cms"
@@ -38,7 +36,7 @@ import (
 // replication drivers, currently supporting DRBD.
 type ReplicationDriver interface {
 	// Any initialization the replication driver does while starting.
-	Setup() error
+	Setup(configPath string) error
 	// Any operation the replication driver does while stopping.
 	Unset() error
 
@@ -49,13 +47,9 @@ type ReplicationDriver interface {
 	FailoverReplication(opt *pb.FailoverReplicationOpts) error
 }
 
-func IsSupportArrayBasedReplication(resourceType string) bool {
-	v := reflect.ValueOf(config.CONF.Backends)
-	t := reflect.TypeOf(config.CONF.Backends)
-	for i := 0; i < t.NumField(); i++ {
-		field := v.Field(i)
-		tag := t.Field(i).Tag.Get("conf")
-		if resourceType == tag && field.Interface().(config.BackendProperties).SupportReplication {
+func IsSupportArrayBasedReplication(resourceName string) bool {
+	for i := 0; i < len(config.CONF.Backends); i++ {
+		if resourceName == config.CONF.Backends[i].Name && config.CONF.Backends[i].SupportReplication {
 			return true
 		}
 	}
@@ -63,7 +57,7 @@ func IsSupportArrayBasedReplication(resourceType string) bool {
 }
 
 // Init
-func InitReplicationDriver(resourceType string) (ReplicationDriver, error) {
+func InitReplicationDriver(resourceType string, configPath string) (ReplicationDriver, error) {
 	var d ReplicationDriver
 	switch resourceType {
 	case driversConfig.DRBDDriverType:
@@ -78,7 +72,7 @@ func InitReplicationDriver(resourceType string) (ReplicationDriver, error) {
 		d = &replication_sample.ReplicationDriver{}
 		break
 	}
-	err := d.Setup()
+	err := d.Setup(configPath)
 	return d, err
 }
 

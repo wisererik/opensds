@@ -33,7 +33,7 @@ import (
 
 type FileShareDriver interface {
 	//Any initialization the fileshare driver does while starting.
-	Setup() error
+	Setup(configPath string) error
 	//Any operation the fileshare driver does while stopping.
 	Unset() error
 
@@ -53,7 +53,7 @@ type FileShareDriver interface {
 }
 
 // Init
-func Init(resourceType string) FileShareDriver {
+func Init(resourceType, configPath string) FileShareDriver {
 	var f FileShareDriver
 	switch resourceType {
 	case config.NFSDriverType:
@@ -72,7 +72,7 @@ func Init(resourceType string) FileShareDriver {
 		f = &sample.Driver{}
 		break
 	}
-	f.Setup()
+	f.Setup(configPath)
 	return f
 }
 

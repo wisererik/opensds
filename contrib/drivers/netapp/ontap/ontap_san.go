@@ -36,7 +36,6 @@ import (
 	. "github.com/opensds/opensds/contrib/drivers/utils/config"
 	"github.com/opensds/opensds/pkg/model"
 	pb "github.com/opensds/opensds/pkg/model/proto"
-	"github.com/opensds/opensds/pkg/utils/config"
 )
 
 func lunPath(name string) string {
@@ -89,11 +88,11 @@ func (d *SANDriver) GetSnapshotConfig(snapName string, volName string) (snapConf
 	return snapConfig
 }
 
-func (d *SANDriver) Setup() error {
+func (d *SANDriver) Setup(configPath string) error {
 	// Read NetApp ONTAP config file
 	d.conf = &ONTAPConfig{}
 
-	p := config.CONF.OsdsDock.Backends.NetappOntapSan.ConfigPath
+	p := configPath
 	if "" == p {
 		p = defaultConfPath
 	}

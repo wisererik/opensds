@@ -302,55 +302,52 @@ func TestOpensdsConfig(t *testing.T) {
 	if CONF.Database.Driver != "etcd" {
 		t.Error("Test Database.Driver error")
 	}
-	if CONF.Backends.Ceph.Name != "ceph" {
-		t.Error("Test Ceph.Backends.Name error")
-	}
-	if CONF.Ceph.Name != "ceph" {
+	if CONF.Backends[0].Name != "ceph" {
 		t.Error("Test Ceph.Name error")
 	}
-	if CONF.Ceph.Description != "Ceph Test" {
+	if CONF.Backends[0].Description != "Ceph Test" {
 		t.Error("Test Ceph.Description error")
 	}
-	if CONF.Ceph.DriverName != "ceph" {
+	if CONF.Backends[0].DriverName != "ceph" {
 		t.Error("Test Ceph.DriverName error")
 	}
-	if CONF.Ceph.ConfigPath != "/etc/opensds/driver/ceph.yaml" {
+	if CONF.Backends[0].ConfigPath != "/etc/opensds/driver/ceph.yaml" {
 		t.Error("Test Ceph.ConfigPath error")
 	}
-	if CONF.Cinder.Name != "cinder" {
+	if CONF.Backends[1].Name != "cinder" {
 		t.Error("Test Cinder.Name error")
 	}
-	if CONF.Cinder.Description != "Cinder Test" {
+	if CONF.Backends[1].Description != "Cinder Test" {
 		t.Error("Test Cinder.Description error")
 	}
-	if CONF.Cinder.DriverName != "cinder" {
+	if CONF.Backends[1].DriverName != "cinder" {
 		t.Error("Test Cinder.DriverName error")
 	}
-	if CONF.Cinder.ConfigPath != "/etc/opensds/driver/cinder.yaml" {
+	if CONF.Backends[1].ConfigPath != "/etc/opensds/driver/cinder.yaml" {
 		t.Error("Test Cinder.ConfigPath error")
 	}
-	if CONF.Sample.Name != "sample" {
+	if CONF.Backends[2].Name != "sample" {
 		t.Error("Test Sample.Name error")
 	}
-	if CONF.Sample.Description != "Sample Test" {
+	if CONF.Backends[2].Description != "Sample Test" {
 		t.Error("Test Sample.Description error")
 	}
-	if CONF.Sample.DriverName != "sample" {
+	if CONF.Backends[2].DriverName != "sample" {
 		t.Error("Test Sample.DriverName error")
 	}
-	if CONF.Sample.ConfigPath != "/etc/opensds/driver/sample.yaml" {
+	if CONF.Backends[2].ConfigPath != "/etc/opensds/driver/sample.yaml" {
 		t.Error("Test Sample.ConfigPath error")
 	}
-	if CONF.LVM.Name != "lvm" {
+	if CONF.Backends[3].Name != "lvm" {
 		t.Error("Test LVM.Name error")
 	}
-	if CONF.LVM.Description != "LVM Test" {
+	if CONF.Backends[3].Description != "LVM Test" {
 		t.Error("Test Sample.Description error")
 	}
-	if CONF.LVM.DriverName != "lvm" {
+	if CONF.Backends[3].DriverName != "lvm" {
 		t.Error("Test LVM.DriverName error")
 	}
-	if CONF.LVM.ConfigPath != "/etc/opensds/driver/lvm.yaml" {
+	if CONF.Backends[3].ConfigPath != "/etc/opensds/driver/lvm.yaml" {
 		t.Error("Test LVM.ConfigPath error")
 	}
 	bm := GetBackendsMap()

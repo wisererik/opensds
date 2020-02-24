@@ -32,7 +32,7 @@ import (
 type Driver struct{}
 
 // Setup
-func (*Driver) Setup() error { return nil }
+func (*Driver) Setup(configPath string) error { return nil }
 
 // Unset
 func (*Driver) Unset() error { return nil }
