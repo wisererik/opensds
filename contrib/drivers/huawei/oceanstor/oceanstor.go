@@ -37,8 +37,8 @@ type Driver struct {
 
 	limitLunIdRange bool
 	availableLunIds map[int64]bool
+	lunIdRangeMutex sync.Mutex
 
-	createVolumeMutex sync.Mutex
 	attachDetachMutex sync.Mutex
 }
 
@@ -212,9 +212,6 @@ func (d *Driver) copyVolume(opt *pb.CreateVolumeOpts, srcid, tgtid string) error
 }
 
 func (d *Driver) CreateVolume(opt *pb.CreateVolumeOpts) (*model.VolumeSpec, error) {
-	d.createVolumeMutex.Lock()
-	defer d.createVolumeMutex.Unlock()
-
 	if opt.GetSnapshotId() != "" {
 		return d.createVolumeFromSnapshot(opt)
 	}
@@ -287,7 +284,12 @@ func (d *Driver) DeleteVolume(opt *pb.DeleteVolumeOpts) error {
 	log.Info("Remove volume success, volume id =", opt.GetId())
 	if d.limitLunIdRange {
 		id, _ := strconv.ParseInt(lunId, 10, 64)
-		d.removeAvailableLunId(id)
+		if id >= d.conf.LunIdRangeMin && id <= d.conf.LunIdRangeMax {
+			d.lunIdRangeMutex.Lock()
+			defer d.lunIdRangeMutex.Unlock()
+
+			d.addAvailableLunId(id)
+		}
 	}
 
 	return nil
@@ -941,6 +943,9 @@ func (d *Driver) getAvailableLunIds(lunIdRangeMin, lunIdRangeMax int64) error {
 }
 
 func (d *Driver) createVolumeWithId(name string, size int64, desc, poolId, provPolicy string) (*Lun, error) {
+	d.lunIdRangeMutex.Lock()
+	defer d.lunIdRangeMutex.Unlock()
+
 	var lunIdsRefreshed bool
 
 	for i := 0; i < 2; i++ {

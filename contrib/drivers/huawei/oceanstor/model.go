@@ -49,6 +49,7 @@ type StoragePool struct {
 	UserFreeCapacity  string `json:"USERFREECAPACITY"`
 	UserTotalCapacity string `json:"USERTOTALCAPACITY"`
 }
+
 type StoragePoolsResp struct {
 	Data  []StoragePool `json:"data"`
 	Error Error         `json:"error"`
