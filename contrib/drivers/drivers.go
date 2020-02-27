@@ -85,177 +85,64 @@ type VolumeDriver interface {
 }
 
 var (
-	CinderDrivers        = make(map[string]cinder.Driver)
-	CephDrivers          = make(map[string]ceph.Driver)
-	LvmDrivers           = make(map[string]lvm.Driver)
-	SpectrumscaleDrivers = make(map[string]spectrumscale.Driver)
-	OceanStorDrivers     = make(map[string]oceanstor.Driver)
-	FusionstorageDrivers = make(map[string]fusionstorage.Driver)
-	NimbleDrivers        = make(map[string]nimble.Driver)
-	EternusDrivers       = make(map[string]eternus.Driver)
-	OntapSANDrivers      = make(map[string]ontap.SANDriver)
-	SampleDrivers        = make(map[string]sample.Driver)
+	Drivers = make(map[string]VolumeDriver)
 )
 
 // Init
 func Init(resourceType, configPath, dockName string) (VolumeDriver, error) {
 	var d VolumeDriver
 
-	switch resourceType {
-	case config.CinderDriverType:
-		_, exist := CinderDrivers[dockName]
-		if exist {
-			cinderDriver := CinderDrivers[dockName]
-			d = &cinderDriver
-		} else {
+	driver, exist := Drivers[dockName]
+	if exist {
+		d = driver
+	} else {
+		switch resourceType {
+		case config.CinderDriverType:
 			cinderDriver := cinder.Driver{}
 			d = &cinderDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			CinderDrivers[dockName] = cinderDriver
-		}
-		break
-	case config.CephDriverType:
-		_, exist := CephDrivers[dockName]
-		if exist {
-			cephDriver := CephDrivers[dockName]
-			d = &cephDriver
-		} else {
+			break
+		case config.CephDriverType:
 			cephDriver := ceph.Driver{}
 			d = &cephDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			CephDrivers[dockName] = cephDriver
-		}
-		break
-	case config.LVMDriverType:
-		_, exist := LvmDrivers[dockName]
-		if exist {
-			lvmDriver := LvmDrivers[dockName]
-			d = &lvmDriver
-		} else {
+			break
+		case config.LVMDriverType:
 			lvmDriver := lvm.Driver{}
 			d = &lvmDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			LvmDrivers[dockName] = lvmDriver
-		}
-		break
-	case config.IBMSpectrumScaleDriverType:
-		_, exist := SpectrumscaleDrivers[dockName]
-		if exist {
-			spectrumscaleDriver := SpectrumscaleDrivers[dockName]
-			d = &spectrumscaleDriver
-		} else {
+			break
+		case config.IBMSpectrumScaleDriverType:
 			spectrumscaleDriver := spectrumscale.Driver{}
 			d = &spectrumscaleDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			SpectrumscaleDrivers[dockName] = spectrumscaleDriver
-		}
-		break
-	case config.HuaweiOceanStorBlockDriverType:
-		_, exist := OceanStorDrivers[dockName]
-		if exist {
-			oceanstorDriver := OceanStorDrivers[dockName]
-			d = &oceanstorDriver
-		} else {
+			break
+		case config.HuaweiOceanStorBlockDriverType:
 			oceanstorDriver := oceanstor.Driver{}
 			d = &oceanstorDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			OceanStorDrivers[dockName] = oceanstorDriver
-		}
-		break
-	case config.HuaweiFusionStorageDriverType:
-		d = &fusionstorage.Driver{}
-		_, exist := FusionstorageDrivers[dockName]
-		if exist {
-			fusionstorageDriver := FusionstorageDrivers[dockName]
-			d = &fusionstorageDriver
-		} else {
+			break
+		case config.HuaweiFusionStorageDriverType:
 			fusionstorageDriver := fusionstorage.Driver{}
 			d = &fusionstorageDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			FusionstorageDrivers[dockName] = fusionstorageDriver
-		}
-		break
-	case config.HpeNimbleDriverType:
-		_, exist := NimbleDrivers[dockName]
-		if exist {
-			nimbleDriver := NimbleDrivers[dockName]
-			d = &nimbleDriver
-		} else {
+			break
+		case config.HpeNimbleDriverType:
 			nimbleDriver := nimble.Driver{}
 			d = &nimbleDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			NimbleDrivers[dockName] = nimbleDriver
-		}
-		break
-	case config.FujitsuEternusDriverType:
-		d = &eternus.Driver{}
-		_, exist := EternusDrivers[dockName]
-		if exist {
-			eternusDriver := EternusDrivers[dockName]
-			d = &eternusDriver
-		} else {
+			break
+		case config.FujitsuEternusDriverType:
 			eternusDriver := eternus.Driver{}
 			d = &eternusDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			EternusDrivers[dockName] = eternusDriver
-		}
-		break
-	case config.NetappOntapSanDriverType:
-		d = &ontap.SANDriver{}
-		_, exist := OntapSANDrivers[dockName]
-		if exist {
-			ontapSANDDriver := OntapSANDrivers[dockName]
-			d = &ontapSANDDriver
-		} else {
+			break
+		case config.NetappOntapSanDriverType:
 			ontapSANDDriver := ontap.SANDriver{}
 			d = &ontapSANDDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			OntapSANDrivers[dockName] = ontapSANDDriver
-		}
-		break
-	default:
-		d = &sample.Driver{}
-		_, exist := SampleDrivers[dockName]
-		if exist {
-			sampleDriver := SampleDrivers[dockName]
-			d = &sampleDriver
-		} else {
+			break
+		default:
 			sampleDriver := sample.Driver{}
 			d = &sampleDriver
-			err := d.Setup(configPath)
-			if err != nil {
-				return nil, err
-			}
-			SampleDrivers[dockName] = sampleDriver
+			break
 		}
-		break
+		err := d.Setup(configPath)
+		if err != nil {
+			return nil, err
+		}
+		Drivers[dockName] = d
 	}
 	return d, nil
 }
